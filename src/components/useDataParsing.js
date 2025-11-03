@@ -3,7 +3,11 @@ import Papa from 'papaparse';
 
 // CSV 파일 경로 설정. 'public' 폴더에 넣은 파일을 가리킵니다.
 // '날씨데이터_10년_20251023230925.csv' 파일을 public 폴더에 넣어주세요.
-const CSV_FILE_PATH = process.env.PUBLIC_URL + '/날씨데이터_10년_20251023230925.csv';
+// 💡 Step 1에서 변경한 새로운 파일명을 사용합니다.
+const CSV_FILE_NAME = 'weather_data_10y.csv'; 
+
+// 배포 환경에서는 PUBLIC_URL을 생략하고 루트 경로(슬래시)만 쓰는 것이 더 안전합니다.
+const CSV_FILE_PATH = process.env.PUBLIC_URL + '/' + CSV_FILE_NAME;
 
 // 사용자 정의 Hook 정의 (앱 개발의 ViewModel 역할)
 export const useDataParsing = () => {
@@ -15,7 +19,9 @@ export const useDataParsing = () => {
     fetch(CSV_FILE_PATH)
       .then(response => {
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          // 💡 파일 로드 실패 시 에러를 던져서 catch에서 잡히도록 합니다.
+          console.error(`Error fetching file: ${response.status} ${response.statusText} at ${CSV_FILE_PATH}`);
+          throw new Error(`파일을 찾을 수 없습니다. 경로: ${CSV_FILE_PATH}`); 
         }
         return response.text();
       })
@@ -74,7 +80,7 @@ export const useDataParsing = () => {
         });
       })
       .catch(err => {
-        setError(err.message);
+        setError(`데이터 로드 실패: ${err.message}`);
         setLoading(false);
       });
   }, []);

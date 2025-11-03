@@ -1,0 +1,24 @@
+/* src/components/VisualizationContainer.css */
+
+.visualization-container {
+    /* 전체 컨테이너에 약간의 안쪽 여백을 주고, 배경색을 설정합니다. */
+    padding: 30px;
+    background-color: #f8f8f8;
+    border-radius: 8px; /* 모서리를 둥글게 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 약간의 그림자 효과 */
+    margin: 20px auto; /* 중앙 정렬 */
+    max-width: 1100px;
+}
+
+.visualization-container h2 {
+    /* 제목 스타일 */
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 1.8em;
+}
+
+.visualization-container p {
+    /* 설명 문구 스타일 */
+    color: #7f8c8d;
+    margin-bottom: 25px;
+}

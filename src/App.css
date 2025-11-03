@@ -1,10 +1,68 @@
+/* src/App.css */
+
 .App {
   text-align: center;
+  /* 버튼이 화면 중앙에 오도록 합니다. */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* 화면 전체 높이 사용 */
+  background-color: #f0f2f5;
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+.main-menu {
+  padding: 40px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.main-menu h1 {
+  color: #34495e;
+  margin-bottom: 5px;
+}
+
+.main-menu p {
+  color: #7f8c8d;
+  margin-bottom: 30px;
+}
+
+.menu-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 18px;
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s, transform 0.1s;
+  width: 300px;
+}
+
+.menu-button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.home-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 6px;
+    z-index: 10; /* 다른 요소 위에 표시되도록 */
 }
 
 @media (prefers-reduced-motion: no-preference) {

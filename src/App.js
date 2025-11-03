@@ -1,30 +1,21 @@
 import React, { useState } from 'react';
 import './App.css'; 
 import VisualizationContainer from './components/VisualizationContainer';
-
-// 지도 예제는 아직 구현하지 않았으므로, 빈 컴포넌트로 만듭니다.
-const MapExample = () => {
-    return (
-        <div style={{ padding: '20px', textAlign: 'center' }}>
-            <h2>🗺️ 지도 예제 (준비 중)</h2>
-            <p>Plotly를 사용하여 지역 특성 분석을 위한 지도 시각화를 구현할 예정입니다.</p>
-        </div>
-    );
-}
+import MapExample from './components/MapExample'; 
 
 function App() {
   // 'menu', 'line', 'map' 중 현재 모드를 저장하는 상태 (State)
   const [mode, setMode] = useState('menu'); 
 
-  // 현재 모드에 따라 보여줄 컴포넌트 결정
-  const renderContent = () => {
+  // 현재 모드에 따라 보여줄 컴포넌트 결정    
+    const renderContent = () => {
     if (mode === 'line') {
-      return <VisualizationContainer />;
+        return <VisualizationContainer />;
     }
     if (mode === 'map') {
-      return <MapExample />;
+        return <MapExample />;
     }
-    
+
     // mode === 'menu' 일 때 보여줄 메뉴 화면
     return (
       <div className="main-menu">

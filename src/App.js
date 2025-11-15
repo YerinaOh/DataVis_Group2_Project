@@ -33,7 +33,7 @@ function App() {
         {/* 버튼 1: Line Chart 예제 */}
         <button 
           className="menu-button" 
-          color='rgba(157, 160, 161, 1)'
+          style={{ backgroundColor: 'rgba(157, 160, 161, 1)', color: 'white' }}
           onClick={() => setMode('line')}
         >
           📈 Line Chart 예제 (안씀!)
@@ -42,7 +42,7 @@ function App() {
         {/* 버튼 2: Map Chart 예제 */}
         <button 
           className="menu-button" 
-          color='rgba(157, 160, 161, 1)'
+          style={{ backgroundColor: 'rgba(157, 160, 161, 1)', color: 'white' }}
           onClick={() => setMode('map')}
         >
           🗺️ 지도 예제 (안씀!)
@@ -51,7 +51,7 @@ function App() {
         {/* 버튼 3: ScatterPlot 예제 */}
         <button 
           className="menu-button"
-          color='rgba(157, 160, 161, 1)'
+          style={{ backgroundColor: 'rgba(157, 160, 161, 1)', color: 'white' }}
           onClick={() => setMode('plot')}
         >
           💠 ScatterPlot 예제 (안씀!)

@@ -33,25 +33,28 @@ function App() {
         {/* 버튼 1: Line Chart 예제 */}
         <button 
           className="menu-button" 
+          color='rgba(157, 160, 161, 1)'
           onClick={() => setMode('line')}
         >
-          📈 Line Chart 예제 (월별 기온 추이)
+          📈 Line Chart 예제 (안씀!)
         </button>
         
         {/* 버튼 2: Map Chart 예제 */}
         <button 
           className="menu-button" 
+          color='rgba(157, 160, 161, 1)'
           onClick={() => setMode('map')}
         >
-          🗺️ 지도 예제 (지역 데이터 연동)
+          🗺️ 지도 예제 (안씀!)
         </button>
 
         {/* 버튼 3: ScatterPlot 예제 */}
         <button 
-          className="menu-button" 
+          className="menu-button"
+          color='rgba(157, 160, 161, 1)'
           onClick={() => setMode('plot')}
         >
-          💠 ScatterPlot 예제 (어떤 날씨 요인이 소비를 가장 많이 변화 시키는가?)
+          💠 ScatterPlot 예제 (안씀!)
         </button>
         {/* 버튼 4: 수원시 매출 데이터 시각화 예제 */}
         <button 

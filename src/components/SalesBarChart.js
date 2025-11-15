@@ -144,6 +144,39 @@ const SalesBarChart = () => {
 
   return (
     <div className="main-container">
+      <h2>🐬수원 지역의 날씨에 따른 업종별 소비량 비교🐬</h2>
+      <p>데이터시각화 2조 - Final Project</p>
+
+      {/* 차트 컨테이너 */}
+      <div className="chart-container">
+        {chartDisplayData && chartDisplayData.x.length > 0 ? (
+          <Plot
+            data={[
+              {
+                x: chartDisplayData.x,
+                y: chartDisplayData.y,
+                type: 'bar',
+                marker: { color: 'rgb(55, 128, 191)' },
+              },
+            ]}
+            layout={{
+              title: getChartTitle(), // 동적 제목
+              xaxis: { title: '업종', automargin: true },
+              yaxis: { title: '매출액 (만원)', autorange: true, tickformat: ',.0f' },
+              width: 1000,
+              height: 600,
+            }}
+            useResizeHandler={true}
+            style={{ width: '100%', height: '100%' }}
+            config={{ responsive: true }}
+          />
+        ) : (
+          <div className="loading-message">
+            {isLoading ? '데이터 처리 중...' : '선택한 조건에 해당하는 데이터가 없습니다.'}
+          </div>
+        )}
+      </div>
+
       {/* 1. 기온 슬라이더 */}
       <div className="slider-container">
         <label htmlFor="temp-slider">기온 선택: {selectedTemp}°C</label>
@@ -207,35 +240,7 @@ const SalesBarChart = () => {
       </div>
 
 
-      {/* 차트 컨테이너 */}
-      <div className="chart-container">
-        {chartDisplayData && chartDisplayData.x.length > 0 ? (
-          <Plot
-            data={[
-              {
-                x: chartDisplayData.x,
-                y: chartDisplayData.y,
-                type: 'bar',
-                marker: { color: 'rgb(55, 128, 191)' },
-              },
-            ]}
-            layout={{
-              title: getChartTitle(), // 동적 제목
-              xaxis: { title: '업종', automargin: true },
-              yaxis: { title: '매출액 (만원)', autorange: true, tickformat: ',.0f' },
-              width: 1000,
-              height: 600,
-            }}
-            useResizeHandler={true}
-            style={{ width: '100%', height: '100%' }}
-            config={{ responsive: true }}
-          />
-        ) : (
-          <div className="loading-message">
-            {isLoading ? '데이터 처리 중...' : '선택한 조건에 해당하는 데이터가 없습니다.'}
-          </div>
-        )}
-      </div>
+      
     </div>
   );
 };

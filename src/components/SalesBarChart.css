@@ -1,0 +1,100 @@
+/* SalesBarChart.css */
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.slider-container {
+  width: 90%;
+  max-width: 1000px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 20px;
+  box-sizing: border-box; 
+  font-size: 1.1em;
+  color: #333;
+  margin-bottom: -10px; 
+}
+
+.slider-container:last-of-type {
+  margin-bottom: 0;
+}
+
+.slider-container label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.slider {
+  width: 100%;
+  cursor: pointer;
+}
+
+.slider:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* --- [신규] 필터 선택 상자 스타일 --- */
+.filter-container {
+  display: flex;
+  justify-content: space-between; /* 항목들을 균등하게 배치 */
+  width: 90%;
+  max-width: 1000px;
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-sizing: border-box;
+  gap: 20px; /* 항목 사이 간격 */
+}
+
+.filter-item {
+  flex: 1; /* 3개 항목이 동일한 너비를 갖도록 함 */
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-item label {
+  font-size: 0.9em;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.filter-select {
+  padding: 10px;
+  font-size: 1em;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+}
+/* --- 필터 스타일 끝 --- */
+
+.chart-container {
+  width: 90%;
+  max-width: 1000px;
+  min-height: 600px; 
+  margin: 20px auto 40px auto; 
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.loading-message {
+  font-size: 1.2em;
+  color: #555;
+  padding: 40px;
+  text-align: center;
+}

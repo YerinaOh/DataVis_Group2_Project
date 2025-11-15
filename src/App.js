@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import './App.css'; 
 import VisualizationContainer from './components/VisualizationContainer';
 import MapExample from './components/MapExample'; 
+import PlotExample from './components/Analysis1_ScatterPlot'; 
+import SuwonExample from './components/SalesBarChart'; 
 
 function App() {
   // 'menu', 'line', 'map' 중 현재 모드를 저장하는 상태 (State)
@@ -14,6 +16,12 @@ function App() {
     }
     if (mode === 'map') {
         return <MapExample />;
+    }
+    if (mode === 'plot') {
+        return <PlotExample />;
+    }
+    if (mode === 'suwon') {
+        return <SuwonExample />;
     }
 
     // mode === 'menu' 일 때 보여줄 메뉴 화면
@@ -36,6 +44,21 @@ function App() {
           onClick={() => setMode('map')}
         >
           🗺️ 지도 예제 (지역 데이터 연동)
+        </button>
+
+        {/* 버튼 3: ScatterPlot 예제 */}
+        <button 
+          className="menu-button" 
+          onClick={() => setMode('plot')}
+        >
+          💠 ScatterPlot 예제 (어떤 날씨 요인이 소비를 가장 많이 변화 시키는가?)
+        </button>
+        {/* 버튼 4: 수원시 매출 데이터 시각화 예제 */}
+        <button 
+          className="menu-button" 
+          onClick={() => setMode('suwon')}
+        >
+          💠 수원시 매출 데이터 시각화
         </button>
       </div>
     );

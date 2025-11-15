@@ -22,3 +22,58 @@
     color: #7f8c8d;
     margin-bottom: 25px;
 }
+
+.chart-container {
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    margin: 30px auto;
+    max-width: 1000px;
+    text-align: center;
+}
+
+.chart-container h2 {
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.chart-container p {
+    color: #7f8c8d;
+    margin-bottom: 25px;
+}
+
+/* 데이터 로딩/에러 메시지 스타일 */
+.chart-container.loading, .chart-container.error {
+    font-size: 1.2em;
+    padding: 50px;
+    color: #e74c3c;
+    border: 2px dashed #e74c3c;
+    background-color: #fceae8;
+}
+
+/* 4. Scatter Plot 전용 스타일 및 컨트롤 패널 */
+.analysis-scatter-plot {
+    text-align: left;
+}
+
+.controls-panel {
+    margin-bottom: 20px;
+    padding: 10px 0;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.select-control {
+    padding: 8px 15px;
+    border-radius: 6px;
+    border: 1px solid #bdc3c7;
+    font-size: 1em;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.select-control:focus {
+    border-color: #3498db;
+    outline: none;
+}

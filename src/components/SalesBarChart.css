@@ -1,6 +1,6 @@
 /* SalesBarChart.css */
 
-/* 기본 레이아웃 세팅 */
+/* (상단 공통 스타일 유지) */
 .baemin-dashboard {
   width: 100%;
   max-width: 1200px;
@@ -14,97 +14,80 @@
   gap: 20px;
 }
 
-/* --- 공통 카드 스타일 --- */
 section.weather-widget-card,
 section.control-panel-card,
-section.chart-section-card {
+section.chart-section-card,
+section.insight-section-card {
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); /* 부드러운 그림자 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); 
   border: 1px solid #eee;
   overflow: hidden;
 }
 
-/* --- 1. 날씨 위젯 스타일 --- */
-.weather-widget-card {
-  padding: 20px 30px;
-}
+/* ... (날씨 위젯 스타일 유지) ... */
+.weather-widget-card { padding: 20px 30px; }
+.widget-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
+.widget-header h4 { margin: 0; font-size: 1.1rem; font-weight: 700; color: #333; }
+.update-time { font-size: 0.85rem; color: #999; }
+.widget-body { display: flex; align-items: center; gap: 40px; }
+.weather-item { display: flex; flex-direction: column; align-items: center; }
+.w-label { font-size: 0.85rem; color: #888; margin-bottom: 4px; }
+.w-value { font-size: 1.4rem; font-weight: 700; color: #333; }
+.w-value.temp { color: #ff6b6b; }
+.w-value.rain { color: #4d96ff; }
+.w-value.humidity { color: #333; }
+.weather-message { flex-grow: 1; background-color: #f0fbfa; padding: 15px; border-radius: 8px; color: #333; font-size: 0.95rem; border-left: 4px solid #2ac1bc; }
 
-.widget-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #f0f0f0;
-  padding-bottom: 10px;
-}
 
-.widget-header h4 {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #333;
-}
-
-.update-time {
-  font-size: 0.85rem;
-  color: #999;
-}
-
-.widget-body {
-  display: flex;
-  align-items: center;
-  gap: 40px;
-}
-
-.weather-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.w-label {
-  font-size: 0.85rem;
-  color: #888;
-  margin-bottom: 4px;
-}
-
-.w-value {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #333;
-}
-
-.w-value.temp { color: #ff6b6b; } /* 온도 포인트 컬러 */
-.w-value.rain { color: #4d96ff; } /* 비 포인트 컬러 */
-
-.weather-message {
-  flex-grow: 1;
-  background-color: #f0fbfa; /* 아주 연한 민트 배경 */
-  padding: 15px;
-  border-radius: 8px;
-  color: #333;
-  font-size: 0.95rem;
-  border-left: 4px solid #2ac1bc; /* 배민 민트 라인 */
-}
-
-/* --- 2. 컨트롤 패널 스타일 --- */
-.control-panel-card .panel-header {
+/* --- 2. 컨트롤 패널 스타일 (수정됨) --- */
+.control-panel-card .panel-header-row {
   background-color: #f8f9fa;
   padding: 15px 25px;
   border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between; /* 텍스트와 버튼 양끝 정렬 */
+  align-items: center;
 }
 
-.control-panel-card .panel-header h4 {
+.control-panel-card .header-text h4 {
   margin: 0 0 5px 0;
   font-size: 1rem;
   color: #333;
 }
 
-.control-panel-card .panel-header p {
+.control-panel-card .header-text p {
   margin: 0;
   font-size: 0.85rem;
   color: #888;
+}
+
+/* [신규] 다운로드 버튼 스타일 */
+.bm-download-btn {
+  background-color: #fff;
+  border: 1px solid #2ac1bc;
+  color: #2ac1bc;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bm-download-btn:hover {
+  background-color: #2ac1bc;
+  color: #fff;
+}
+
+.bm-download-btn:disabled {
+  border-color: #ccc;
+  color: #ccc;
+  cursor: not-allowed;
+  background-color: #f9f9f9;
 }
 
 .panel-body {
@@ -114,159 +97,47 @@ section.chart-section-card {
   gap: 25px;
 }
 
-/* 슬라이더 그룹 */
-.control-group.sliders {
-  display: flex;
-  gap: 40px;
-}
+/* 슬라이더, 드롭다운 등 기존 스타일 유지 */
+.control-group.sliders { display: flex; gap: 40px; }
+.control-item { flex: 1; }
+.label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.label-row label { font-weight: 600; font-size: 0.95rem; color: #555; }
+.value-display { display: flex; align-items: center; gap: 10px; }
+.current-val { font-weight: 700; color: #2ac1bc; }
+.bm-toggle-btn { background: #fff; border: 1px solid #ddd; color: #666; font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+.bm-toggle-btn.active { background: #333; color: #fff; border-color: #333; }
+.bm-slider { width: 100%; -webkit-appearance: none; height: 6px; background: #e0e0e0; border-radius: 3px; outline: none; }
+.bm-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: #fff; border: 2px solid #2ac1bc; border-radius: 50%; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-top: -7px; }
+.bm-slider:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.control-item {
-  flex: 1;
-}
+.control-group.dropdowns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding-top: 15px; border-top: 1px dashed #eee; }
+.dropdown-item { display: flex; flex-direction: column; gap: 6px; }
+.dropdown-item label { font-size: 0.85rem; color: #777; font-weight: 500; }
+.bm-select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem; color: #333; background-color: #fff; cursor: pointer; }
+.bm-select:focus { border-color: #2ac1bc; outline: none; }
 
-.label-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
+/* --- 3. 차트 영역 & 인사이트 스타일 유지 --- */
+.chart-section-card { min-height: 500px; padding: 0; }
+.chart-header { padding: 20px 25px; border-bottom: 1px solid #eee; }
+.chart-header h4 { margin: 0; font-size: 1.1rem; color: #333; }
+.chart-wrapper { width: 100%; height: 500px; padding: 10px; box-sizing: border-box; }
 
-.label-row label {
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: #555;
-}
+.insight-section-card { border-left: 5px solid #2ac1bc; }
+.insight-header { padding: 15px 25px; background-color: #fff; border-bottom: 1px solid #f5f5f5; }
+.insight-header h4 { margin: 0; font-size: 1.1rem; color: #333; }
+.insight-body { padding: 25px; display: flex; flex-direction: column; gap: 15px; background-color: #fdfdfd; }
+.insight-row { display: flex; align-items: center; gap: 15px; }
+.insight-label { padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; white-space: nowrap; }
+.insight-label.best { background-color: #fff0f0; color: #e03131; }
+.insight-label.worst { background-color: #f0f7ff; color: #1971c2; }
+.insight-text { margin: 0; font-size: 1rem; color: #555; line-height: 1.5; }
+.insight-text strong { color: #333; font-weight: 700; }
+.insight-divider { height: 1px; background-color: #eee; width: 100%; }
 
-.value-display {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.current-val {
-  font-weight: 700;
-  color: #2ac1bc; /* 배민 민트 */
-}
-
-.bm-toggle-btn {
-  background: #fff;
-  border: 1px solid #ddd;
-  color: #666;
-  font-size: 0.75rem;
-  padding: 4px 8px;
-  border-radius: 4px;
-  cursor: pointer;
-  /* transition: all 0.2s; */
-}
-
-.bm-toggle-btn.active {
-  background: #333;
-  color: #fff;
-  border-color: #333;
-}
-
-/* 커스텀 슬라이더 */
-.bm-slider {
-  width: 100%;
-  -webkit-appearance: none;
-  height: 6px;
-  background: #e0e0e0;
-  border-radius: 3px;
-  outline: none;
-}
-
-.bm-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
-  background: #fff;
-  border: 2px solid #2ac1bc;
-  border-radius: 50%;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  margin-top: -7px; /* thumb 중앙 정렬 */
-}
-
-.bm-slider:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* 드롭다운 그룹 */
-.control-group.dropdowns {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4열 그리드 */
-  gap: 15px;
-  padding-top: 15px;
-  border-top: 1px dashed #eee;
-}
-
-.dropdown-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.dropdown-item label {
-  font-size: 0.85rem;
-  color: #777;
-  font-weight: 500;
-}
-
-.bm-select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  color: #333;
-  background-color: #fff;
-  cursor: pointer;
-}
-
-.bm-select:focus {
-  border-color: #2ac1bc;
-  outline: none;
-}
-
-/* --- 3. 차트 영역 스타일 --- */
-.chart-section-card {
-  min-height: 500px;
-  padding: 0;
-}
-
-.chart-header {
-  padding: 20px 25px;
-  border-bottom: 1px solid #eee;
-}
-
-.chart-header h4 {
-  margin: 0;
-  font-size: 1.1rem;
-  color: #333;
-}
-
-.chart-wrapper {
-  width: 100%;
-  height: 500px;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-/* 반응형 (모바일 등) */
 @media (max-width: 768px) {
-  .widget-body {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-  
-  .control-group.sliders {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .control-group.dropdowns {
-    grid-template-columns: 1fr 1fr; /* 2열로 변경 */
-  }
+  .widget-body { flex-direction: column; align-items: flex-start; gap: 15px; }
+  .control-group.sliders { flex-direction: column; gap: 20px; }
+  .control-group.dropdowns { grid-template-columns: 1fr 1fr; }
+  .insight-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .control-panel-card .panel-header-row { flex-direction: column; align-items: flex-start; gap: 10px; } /* 모바일 대응 추가 */
 }

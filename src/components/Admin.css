@@ -280,3 +280,214 @@ body {
   color: #999;
   font-size: 1.2rem;
 }
+
+/* --- 시뮬레이션 페이지 스타일 --- */
+.simulation-wrapper {
+  display: flex;
+  gap: 40px;
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  min-height: 600px;
+}
+
+.sim-control-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.sim-control-panel h4 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.sim-control-panel p {
+  color: #888;
+  line-height: 1.5;
+}
+
+.upload-box {
+  border: 2px dashed #ddd;
+  padding: 40px;
+  text-align: center;
+  border-radius: 12px;
+  background-color: #fafafa;
+}
+
+.upload-btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: var(--baemin-mint);
+  color: white;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.upload-btn:hover {
+  background-color: var(--baemin-mint-dark);
+}
+
+.file-name-display {
+  margin-top: 15px;
+  font-size: 0.9rem;
+  color: #333;
+  font-weight: bold;
+}
+
+.sim-info-box {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid var(--baemin-mint);
+}
+
+.sim-info-box h5 {
+  margin: 0 0 10px 0;
+  font-size: 1rem;
+}
+
+.sim-info-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sim-info-box li {
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* --- 아이폰 프리뷰 영역 --- */
+.sim-preview-area {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  background-color: #f0f2f5; /* 프리뷰 배경 */
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.phone-frame {
+  position: relative; /* 자식 요소 절대 위치 기준점 */
+  width: 320px; /* 아이폰 이미지 너비에 맞게 조정 */
+  height: auto;
+}
+
+.phone-bg {
+  width: 100%;
+  display: block;
+  /* box-shadow: 0 10px 30px rgba(0,0,0,0.2); 이미지가 그림자 포함이면 제거 */
+  border-radius: 40px; /* 아이폰 둥근 모서리 대략 맞춤 */
+}
+
+/* 아이콘 그리드 위치 (회색 띠 위) */
+.app-icon-grid {
+  position: absolute;
+  top: 38%; /* [조정 필요] 회색 띠의 시작 높이 % */
+  left: 8%; /* [조정 필요] 좌우 여백 */
+  width: 84%; /* [조정 필요] 그리드 너비 */
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4열 배치 */
+  gap: 10px 5px; /* 세로, 가로 간격 */
+}
+
+.app-icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.icon-img-box {
+  position: relative;
+  width: 50px; /* 아이콘 크기 */
+  height: 50px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.icon-img-box img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}
+
+.rank-badge {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  background-color: #ff6b6b;
+  color: white;
+  font-size: 0.7rem;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  border: 2px solid white;
+}
+
+.icon-label {
+  font-size: 0.7rem;
+  color: #333;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+}
+
+/* 하단 배너 (아이폰 화면 하단) */
+.app-bottom-banner {
+  position: absolute;
+  bottom: 16%; /* [조정 필요] 하단 위치 */
+  left: 5%;
+  width: 90%;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  padding: 12px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(5px);
+}
+
+.banner-text p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #333;
+  line-height: 1.3;
+}
+
+.banner-tag {
+  font-size: 0.65rem;
+  background-color: var(--baemin-mint);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  display: inline-block;
+}
+
+.app-bottom-banner button {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}

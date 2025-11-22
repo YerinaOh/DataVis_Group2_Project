@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // useRef는 애니메이션용이었다면 제거 가능하지만 일단 유지
 import Plot from 'react-plotly.js';
-// d3-dsv는 데이터 로딩에 필요 없으므로 제거해도 되지만, 혹시 모르니 둡니다.
-import { csvParse } from 'd3-dsv'; 
+import { csvParse } from 'd3-dsv';
 import './SalesBarChart.css';
 
-// [수정] 원본 CSV 파일 경로
 const CSV_FILE_PATH = '/suwon_food_weather_2024_01.csv';
 
 const SEX_OPTIONS = { 'F': '여성', 'M': '남성' };
@@ -39,10 +37,10 @@ const SalesBarChart = () => {
 
   const [fullData, setFullData] = useState([]);
   const [chartDisplayData, setChartDisplayData] = useState(null);
+  const [insightData, setInsightData] = useState(null); // 인사이트 데이터
   const [isLoading, setIsLoading] = useState(true);
-  const chartRevision = useRef(0);
 
-  // [신규] 임의의 현재 날씨 데이터 (나중에 API 연동 예정)
+  // 임의의 현재 날씨 데이터
   const currentWeather = {
     temp: 18.5,
     rain: 0,
@@ -50,7 +48,52 @@ const SalesBarChart = () => {
     status: '맑음 ☀️'
   };
 
-// --- Effect 1: CSV 파일 로드 및 파싱 ---
+  // --- [신규] JSON 다운로드 핸들러 ---
+  const handleDownloadJSON = () => {
+    if (!chartDisplayData || chartDisplayData.x.length === 0) {
+      alert("다운로드할 데이터가 없습니다.");
+      return;
+    }
+
+    // 1. 현재 필터링 조건 정리
+    const conditions = {
+      temperature: isTempAll ? 'ALL' : selectedTemp,
+      humidity: isHumidityAll ? 'ALL' : selectedHumidity,
+      hour: selectedHour === 'ALL' ? 'ALL' : HOUR_OPTIONS[selectedHour],
+      day: selectedDay === 'ALL' ? 'ALL' : DAY_OPTIONS[selectedDay],
+      sex: selectedSex === 'ALL' ? 'ALL' : SEX_OPTIONS[selectedSex],
+      age: selectedAge === 'ALL' ? 'ALL' : AGE_OPTIONS[selectedAge]
+    };
+
+    // 2. 상위 10개 업종 데이터 추출
+    const top10 = chartDisplayData.x.slice(0, 10).map((category, index) => ({
+      rank: index + 1,
+      category: category,
+      amount: chartDisplayData.y[index] // 해당 인덱스의 매출액
+    }));
+
+    // 3. 최종 저장할 데이터 객체 생성
+    const exportData = {
+      title: "배달의민족 타겟광고 시뮬레이션 데이터",
+      created_at: new Date().toLocaleString(),
+      conditions: conditions,
+      top_10_rankings: top10
+    };
+
+    // 4. JSON 파일 생성 및 다운로드 트리거
+    const jsonString = JSON.stringify(exportData, null, 2);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const href = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = href;
+    link.download = `target_simulation_${Date.now()}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+
+  // --- Effect 1: CSV 파일 로드 ---
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -58,7 +101,6 @@ const SalesBarChart = () => {
         if (!response.ok) throw new Error(`Failed to fetch CSV: ${response.statusText}`);
         const csvText = await response.text();
 
-        // [핵심] CSV 텍스트를 객체 배열로 변환
         const parsedData = csvParse(csvText, (row) => {
           return {
             temp: Math.round(+row.temp),
@@ -68,7 +110,7 @@ const SalesBarChart = () => {
             sex: row.sex,
             age: +row.age,
             day: +row.day,
-            hour: +row.hour // [신규] 시간대 데이터 추가
+            hour: +row.hour
           };
         });
         
@@ -82,7 +124,7 @@ const SalesBarChart = () => {
     fetchData();
   }, []);
 
-  // --- Effect 2: 유효 습도 목록 (변경 없음) ---
+  // --- Effect 2: 유효 습도 목록 업데이트 ---
   useEffect(() => {
     if (fullData.length === 0) return;
     let dataForHumidityCalc = fullData;
@@ -92,15 +134,17 @@ const SalesBarChart = () => {
     const uniqueHumidities = [...new Set(dataForHumidityCalc.map(row => row.humidity))];
     uniqueHumidities.sort((a, b) => a - b);
     setAvailableHumidities(uniqueHumidities);
+    
     if (!isHumidityAll && !uniqueHumidities.includes(selectedHumidity)) {
       setSelectedHumidity(uniqueHumidities[0] || null);
     }
   }, [fullData, selectedTemp, isTempAll, isHumidityAll, selectedHumidity]);
 
-  // --- Effect 3: 차트 데이터 계산 (변경 없음) ---
+  // --- Effect 3: 차트 데이터 재계산 & 인사이트 ---
   useEffect(() => {
     if (fullData.length === 0 || (!isHumidityAll && selectedHumidity === null)) {
       setChartDisplayData(null);
+      setInsightData(null);
       return;
     }
     
@@ -128,13 +172,24 @@ const SalesBarChart = () => {
     const sortedData = Object.entries(salesMap)
       .sort(([, aAmount], [, bAmount]) => bAmount - aAmount);
       
+    // 인사이트 데이터
+    if (sortedData.length > 0) {
+      const topItem = sortedData[0];
+      const bottomItem = sortedData[sortedData.length - 1];
+      setInsightData({
+        top: { name: topItem[0], value: topItem[1] },
+        bottom: { name: bottomItem[0], value: bottomItem[1] }
+      });
+    } else {
+      setInsightData(null);
+    }
+
     const plotlyData = {
       x: sortedData.map(d => d[0]),
       y: sortedData.map(d => d[1]),
     };
 
     setChartDisplayData(plotlyData);
-    chartRevision.current++; 
 
   }, [fullData, selectedTemp, selectedHumidity, selectedSex, selectedAge, selectedDay, selectedHour, isTempAll, isHumidityAll]);
 
@@ -143,22 +198,23 @@ const SalesBarChart = () => {
   const tempLabel = isTempAll ? "전체" : `${selectedTemp}°C`;
   const humiditySliderIndex = availableHumidities.indexOf(selectedHumidity);
 
-  // 차트 설정
   const chartAnnotations = [];
   let chartData = { x: [], y: [] };
   
   if (isLoading) {
-    chartAnnotations.push({ text: '데이터 불러오는 중...', xref: 'paper', yref: 'paper', x: 0.5, y: 0.5, showarrow: false, font: { size: 16, color: '#888' }});
+    chartAnnotations.push({ text: '데이터 분석 중...', xref: 'paper', yref: 'paper', x: 0.5, y: 0.5, showarrow: false, font: { size: 16, color: '#888' }});
   } else if (chartDisplayData && chartDisplayData.x.length > 0) {
     chartData = chartDisplayData;
   } else {
     chartAnnotations.push({ text: '조건에 맞는 데이터가 없습니다.', xref: 'paper', yref: 'paper', x: 0.5, y: 0.5, showarrow: false, font: { size: 16, color: '#888' }});
   }
 
+  const formatMoney = (value) => Math.round(value).toLocaleString();
+
   return (
     <div className="baemin-dashboard">
       
-      {/* 1. 상단: 현재 날씨 위젯 (Wireframe 느낌 구현) */}
+      {/* 1. 상단: 현재 날씨 위젯 */}
       <section className="weather-widget-card">
         <div className="widget-header">
           <h4>🌤️ 현재 우리 동네 날씨</h4>
@@ -185,15 +241,20 @@ const SalesBarChart = () => {
 
       {/* 2. 중단: 필터 컨트롤 패널 */}
       <section className="control-panel-card">
-        <div className="panel-header">
-          <h4>📊 맞춤형 매출 분석 조건</h4>
-          <p>과거 데이터를 기반으로 최적의 광고 전략을 세워보세요.</p>
+        <div className="panel-header-row">
+          <div className="header-text">
+            <h4>📊 맞춤형 매출 분석 조건</h4>
+            <p>과거 데이터를 기반으로 최적의 광고 전략을 세워보세요.</p>
+          </div>
+          {/* [신규] 다운로드 버튼 추가 */}
+          <button className="bm-download-btn" onClick={handleDownloadJSON} disabled={isLoading}>
+            📥 시뮬레이션 데이터 다운로드
+          </button>
         </div>
         
         <div className="panel-body">
           {/* 슬라이더 그룹 */}
           <div className="control-group sliders">
-            {/* 기온 */}
             <div className="control-item">
               <div className="label-row">
                 <label>기온 설정</label>
@@ -217,7 +278,6 @@ const SalesBarChart = () => {
               />
             </div>
 
-            {/* 습도 */}
             <div className="control-item">
               <div className="label-row">
                 <label>습도 설정</label>
@@ -288,30 +348,52 @@ const SalesBarChart = () => {
               x: chartData.x,
               y: chartData.y,
               type: 'bar',
-              marker: { color: '#2ac1bc' }, // 배민 민트색 적용
+              marker: { color: '#2ac1bc' },
               hoverinfo: 'x+y',
             }]}
             layout={{
-              // title: '제거 (HTML 헤더로 대체)',
               xaxis: { title: { text: '업종', font: {size: 12, color: '#666'} }, automargin: true, tickfont: {size: 11} },
               yaxis: { title: { text: '매출액 (만원)', font: {size: 12, color: '#666'} }, autorange: true, tickformat: ',.0f' },
-              margin: { l: 60, r: 20, b: 80, t: 20 }, // 여백 최적화
+              margin: { l: 60, r: 20, b: 80, t: 20 },
               height: 500,
               autosize: true,
               paper_bgcolor: 'rgba(0,0,0,0)',
               plot_bgcolor: 'rgba(0,0,0,0)',
-              // transition: { duration: 500, easing: 'cubic-in-out' },
-              uirevision: 'true',
               annotations: chartAnnotations,
               font: { family: 'Pretendard, sans-serif' }
             }}
-            revision={chartRevision.current} 
             useResizeHandler={true}
             style={{ width: '100%', height: '100%' }}
-            config={{ displayModeBar: false }} // 깔끔하게 숨김
+            config={{ displayModeBar: false }}
           />
         </div>
       </section>
+
+      {/* 4. 하단: 분석 인사이트 영역 */}
+      {insightData && (
+        <section className="insight-section-card">
+          <div className="insight-header">
+            <h4>💡 AI 매출 분석 인사이트</h4>
+          </div>
+          <div className="insight-body">
+            <div className="insight-row">
+              <span className="insight-label best">🔥 최고 인기 업종</span>
+              <p className="insight-text">
+                선택하신 조건에서는 <strong>{insightData.top.name}</strong> 업종의 매출이 
+                약 <strong>{formatMoney(insightData.top.value)}만원</strong>으로 가장 높습니다.
+              </p>
+            </div>
+            <div className="insight-divider"></div>
+            <div className="insight-row">
+              <span className="insight-label worst">💧 관심 필요 업종</span>
+              <p className="insight-text">
+                반면 <strong>{insightData.bottom.name}</strong> 업종은 상대적으로 매출이 낮습니다. 
+                해당 시간대에 <strong>{insightData.top.name}</strong> 관련 샵인샵이나 프로모션을 고려해보세요!
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
 
     </div>
   );

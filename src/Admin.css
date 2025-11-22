@@ -1,0 +1,282 @@
+/* Admin.css */
+
+/* 배민 민트색 정의 */
+:root {
+  --baemin-mint: #2ac1bc;
+  --baemin-mint-dark: #23a4a0;
+  --text-black: #333333;
+  --text-gray: #999999;
+  --bg-gray: #f0f2f5;
+  --white: #ffffff;
+}
+
+body {
+  margin: 0;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-gray);
+}
+
+/* --- 로그인 페이지 스타일 --- */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--baemin-mint); /* 배경을 민트색으로 */
+}
+
+.login-box {
+  background-color: var(--white);
+  padding: 50px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  width: 400px;
+  text-align: center;
+}
+
+.baemin-logo {
+  font-family: 'Black Han Sans', sans-serif; /* 배민 도현체 느낌 */
+  color: var(--text-black);
+  margin: 0;
+  font-size: 2.5rem;
+  letter-spacing: -2px;
+}
+
+.admin-badge {
+  background-color: var(--text-black);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.intro-text {
+  margin: 30px 0;
+}
+
+.intro-text h2 {
+  font-size: 1.2rem;
+  color: var(--baemin-mint-dark);
+  margin-bottom: 10px;
+}
+
+.intro-text p {
+  color: var(--text-gray);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.version-text {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: #ccc;
+}
+
+.baemin-input {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+.baemin-input:focus {
+  outline: none;
+  border-color: var(--baemin-mint);
+}
+
+.baemin-button {
+  background-color: var(--baemin-mint);
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.baemin-button:hover {
+  background-color: var(--baemin-mint-dark);
+}
+
+.full-width {
+  width: 100%;
+}
+
+.login-footer {
+  margin-top: 20px;
+  font-size: 0.85rem;
+  color: var(--text-gray);
+  cursor: pointer;
+}
+
+/* --- 대시보드 레이아웃 스타일 --- */
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 사이드바 */
+.sidebar {
+  width: 250px;
+  background-color: #343a40; /* 어두운 사이드바 */
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 25px;
+  background-color: #2e3439;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.baemin-logo-white {
+  margin: 0;
+  font-family: 'Black Han Sans', sans-serif;
+  font-size: 1.5rem;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding-top: 20px;
+}
+
+.nav-item {
+  width: 100%;
+  padding: 15px 25px;
+  background: none;
+  border: none;
+  color: #adb5bd;
+  text-align: left;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s;
+}
+
+.nav-item:hover {
+  color: white;
+  background-color: rgba(255,255,255,0.1);
+}
+
+.nav-item.active {
+  color: var(--baemin-mint);
+  background-color: rgba(42, 193, 188, 0.1);
+  border-right: 4px solid var(--baemin-mint);
+  font-weight: bold;
+}
+
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid #495057;
+}
+
+.logout-button {
+  background: none;
+  border: 1px solid #adb5bd;
+  color: #adb5bd;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+}
+
+/* 메인 콘텐츠 영역 */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-gray);
+  overflow-y: auto;
+}
+
+.top-header {
+  background-color: white;
+  padding: 0 40px;
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.header-title h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: var(--text-black);
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.shop-name {
+  font-weight: bold;
+  color: var(--baemin-mint);
+}
+
+.user-name {
+  color: var(--text-gray);
+  font-size: 0.9rem;
+}
+
+/* 콘텐츠 래퍼 */
+.content-wrapper {
+  padding: 30px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.content-filter-bar {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.tab-button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #e9ecef;
+  border-radius: 20px;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+}
+
+.tab-button.active {
+  background-color: var(--baemin-mint);
+  color: white;
+}
+
+.chart-card-wrapper {
+  /* SalesBarChart.js의 스타일과 충돌하지 않도록 감싸는 역할 */
+  width: 100%;
+}
+
+/* Placeholder */
+.placeholder-content {
+  background: white;
+  height: 400px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #999;
+  font-size: 1.2rem;
+}

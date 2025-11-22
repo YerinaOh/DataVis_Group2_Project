@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Plot from 'react-plotly.js';
-import { csvParse } from 'd3-dsv';
+// d3-dsv는 데이터 로딩에 필요 없으므로 제거해도 되지만, 혹시 모르니 둡니다.
+import { csvParse } from 'd3-dsv'; 
 import './SalesBarChart.css';
 
+// [수정] 원본 CSV 파일 경로
 const CSV_FILE_PATH = '/suwon_food_weather_2024_01.csv';
 
-// 상수 정의 (변경 없음)
 const SEX_OPTIONS = { 'F': '여성', 'M': '남성' };
 const AGE_OPTIONS = {
   1: '0-9세', 2: '10-19세', 3: '20-29세', 4: '30-39세',
@@ -15,18 +16,10 @@ const DAY_OPTIONS = {
   1: '월요일', 2: '화요일', 3: '수요일', 4: '목요일',
   5: '금요일', 6: '토요일', 7: '일요일'
 };
-
-// [신규] 시간대 옵션 정의 (데이터 분석 기반 1-10)
 const HOUR_OPTIONS = {
-  1: '00-07시 (새벽)',
-  2: '07-09시 (아침)',
-  3: '09-11시 (오전)',
-  4: '11-14시 (점심)',
-  5: '14-17시 (오후)',
-  6: '17-18시 (저녁1)',
-  7: '18-20시 (저녁2)',
-  8: '20-21시 (저녁3)',
-  9: '21-23시 (밤)',
+  1: '00-07시 (새벽)', 2: '07-09시 (아침)', 3: '09-11시 (오전)',
+  4: '11-14시 (점심)', 5: '14-17시 (오후)', 6: '17-18시 (저녁1)',
+  7: '18-20시 (저녁2)', 8: '20-21시 (저녁3)', 9: '21-23시 (밤)',
   10: '23-24시 (심야)'
 };
 
@@ -35,10 +28,11 @@ const SalesBarChart = () => {
   const [selectedTemp, setSelectedTemp] = useState(0);
   const [selectedHumidity, setSelectedHumidity] = useState(null);
   const [availableHumidities, setAvailableHumidities] = useState([]);
+  
   const [selectedSex, setSelectedSex] = useState('ALL');
   const [selectedAge, setSelectedAge] = useState('ALL');
   const [selectedDay, setSelectedDay] = useState('ALL');
-  const [selectedHour, setSelectedHour] = useState('ALL'); // [신규] 시간 state
+  const [selectedHour, setSelectedHour] = useState('ALL');
   
   const [isTempAll, setIsTempAll] = useState(false);
   const [isHumidityAll, setIsHumidityAll] = useState(false);
@@ -48,25 +42,35 @@ const SalesBarChart = () => {
   const [isLoading, setIsLoading] = useState(true);
   const chartRevision = useRef(0);
 
-  // --- [수정] Effect 1: CSV 파일 로드 (hour 파싱 추가) ---
+  // [신규] 임의의 현재 날씨 데이터 (나중에 API 연동 예정)
+  const currentWeather = {
+    temp: 18.5,
+    rain: 0,
+    humidity: 45,
+    status: '맑음 ☀️'
+  };
+
+// --- Effect 1: CSV 파일 로드 및 파싱 ---
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(CSV_FILE_PATH);
         if (!response.ok) throw new Error(`Failed to fetch CSV: ${response.statusText}`);
         const csvText = await response.text();
-        
-        // [수정] 파싱 시 hour 추가
-        const parsedData = csvParse(csvText, (row) => ({
-          temp: Math.round(+row.temp),
-          humidity: Math.round(+row.humidity),
-          category: row.card_tpbuz_nm_2,
-          amount: +row.amt / 10000,
-          sex: row.sex,
-          age: +row.age,
-          day: +row.day,
-          hour: +row.hour // [신규] hour 필드 추가
-        }));
+
+        // [핵심] CSV 텍스트를 객체 배열로 변환
+        const parsedData = csvParse(csvText, (row) => {
+          return {
+            temp: Math.round(+row.temp),
+            humidity: Math.round(+row.humidity),
+            category: row.card_tpbuz_nm_2,
+            amount: +row.amt / 10000, // 만원 단위
+            sex: row.sex,
+            age: +row.age,
+            day: +row.day,
+            hour: +row.hour // [신규] 시간대 데이터 추가
+          };
+        });
         
         setFullData(parsedData);
         setIsLoading(false);
@@ -93,7 +97,7 @@ const SalesBarChart = () => {
     }
   }, [fullData, selectedTemp, isTempAll, isHumidityAll, selectedHumidity]);
 
-  // --- [수정] Effect 3: 차트 데이터 재계산 (6개 필터) ---
+  // --- Effect 3: 차트 데이터 계산 (변경 없음) ---
   useEffect(() => {
     if (fullData.length === 0 || (!isHumidityAll && selectedHumidity === null)) {
       setChartDisplayData(null);
@@ -102,7 +106,7 @@ const SalesBarChart = () => {
     
     const ageFilter = selectedAge === 'ALL' ? 'ALL' : Number(selectedAge);
     const dayFilter = selectedDay === 'ALL' ? 'ALL' : Number(selectedDay);
-    const hourFilter = selectedHour === 'ALL' ? 'ALL' : Number(selectedHour); // [신규]
+    const hourFilter = selectedHour === 'ALL' ? 'ALL' : Number(selectedHour);
 
     const filteredData = fullData.filter(row => {
       const tempMatch = isTempAll ? true : (row.temp === selectedTemp);
@@ -110,12 +114,11 @@ const SalesBarChart = () => {
       const sexMatch = (selectedSex === 'ALL') ? true : (row.sex === selectedSex);
       const ageMatch = (ageFilter === 'ALL') ? true : (row.age === ageFilter);
       const dayMatch = (dayFilter === 'ALL') ? true : (row.day === dayFilter);
-      const hourMatch = (hourFilter === 'ALL') ? true : (row.hour === hourFilter); // [신규]
+      const hourMatch = (hourFilter === 'ALL') ? true : (row.hour === hourFilter);
       
-      return tempMatch && humidityMatch && sexMatch && ageMatch && dayMatch && hourMatch; // [수정]
+      return tempMatch && humidityMatch && sexMatch && ageMatch && dayMatch && hourMatch;
     });
 
-    // 업종별 집계
     const salesMap = filteredData.reduce((acc, row) => {
       if (!acc[row.category]) acc[row.category] = 0;
       acc[row.category] += row.amount;
@@ -133,165 +136,182 @@ const SalesBarChart = () => {
     setChartDisplayData(plotlyData);
     chartRevision.current++; 
 
-  }, [fullData, selectedTemp, selectedHumidity, selectedSex, selectedAge, selectedDay, selectedHour, isTempAll, isHumidityAll]); // [수정] selectedHour 의존성 추가
+  }, [fullData, selectedTemp, selectedHumidity, selectedSex, selectedAge, selectedDay, selectedHour, isTempAll, isHumidityAll]);
 
-  // --- 렌더링 ---
-  const humidityLabel = isHumidityAll ? "전체 습도" : (selectedHumidity !== null ? `${selectedHumidity}%` : "N/A");
-  const tempLabel = isTempAll ? "전체 기온" : `${selectedTemp}°C`;
+  // --- 렌더링 로직 ---
+  const humidityLabel = isHumidityAll ? "전체" : (selectedHumidity !== null ? `${selectedHumidity}%` : "-");
+  const tempLabel = isTempAll ? "전체" : `${selectedTemp}°C`;
   const humiditySliderIndex = availableHumidities.indexOf(selectedHumidity);
-  
-  // [수정] 차트 제목 생성
-  const getChartTitle = () => {
-    const hourText = selectedHour === 'ALL' ? '' : `, ${HOUR_OPTIONS[selectedHour]}`; // [신규]
-    const sexText = selectedSex === 'ALL' ? '' : `, ${SEX_OPTIONS[selectedSex]}`;
-    const ageText = selectedAge === 'ALL' ? '' : `, ${AGE_OPTIONS[selectedAge]}`;
-    const dayText = selectedDay === 'ALL' ? '' : `, ${DAY_OPTIONS[selectedDay]}`;
-    // [수정] hourText 추가
-    return `기온 ${tempLabel}, 습도 ${humidityLabel}${hourText}${sexText}${ageText}${dayText} 기준 매출액`;
-  };
 
-  // 차트 내부 메시지 생성 (변경 없음)
+  // 차트 설정
   const chartAnnotations = [];
   let chartData = { x: [], y: [] };
+  
   if (isLoading) {
-    chartAnnotations.push({
-      text: '데이터 로딩 중... (40MB CSV 파일 최초 파싱 중)', // (이전과 동일)
-      xref: 'paper', yref: 'paper',
-      x: 0.5, y: 0.5, showarrow: false,
-      font: { size: 16, color: '#555' }
-    });
+    chartAnnotations.push({ text: '데이터 불러오는 중...', xref: 'paper', yref: 'paper', x: 0.5, y: 0.5, showarrow: false, font: { size: 16, color: '#888' }});
   } else if (chartDisplayData && chartDisplayData.x.length > 0) {
     chartData = chartDisplayData;
   } else {
-    chartAnnotations.push({
-      text: '선택한 조건에 해당하는 데이터가 없습니다.',
-      xref: 'paper', yref: 'paper',
-      x: 0.5, y: 0.5, showarrow: false,
-      font: { size: 16, color: '#555' }
-    });
+    chartAnnotations.push({ text: '조건에 맞는 데이터가 없습니다.', xref: 'paper', yref: 'paper', x: 0.5, y: 0.5, showarrow: false, font: { size: 16, color: '#888' }});
   }
 
   return (
-    <div className="main-container">
-      <h2>🐬수원 지역의 날씨에 따른 업종별 소비량 비교🐬</h2>
-      <p>데이터시각화 2조 - Final Project</p>
-      {/* 1. 차트 컨테이너 (X/Y축 레이블 수정) */}
-      <div className="chart-container">
-        <Plot
-          data={[
-            {
+    <div className="baemin-dashboard">
+      
+      {/* 1. 상단: 현재 날씨 위젯 (Wireframe 느낌 구현) */}
+      <section className="weather-widget-card">
+        <div className="widget-header">
+          <h4>🌤️ 현재 우리 동네 날씨</h4>
+          <span className="update-time">2024.05.20 14:00 기준</span>
+        </div>
+        <div className="widget-body">
+          <div className="weather-item">
+            <span className="w-label">기온</span>
+            <span className="w-value temp">{currentWeather.temp}°C</span>
+          </div>
+          <div className="weather-item">
+            <span className="w-label">강수량</span>
+            <span className="w-value rain">{currentWeather.rain}mm</span>
+          </div>
+          <div className="weather-item">
+            <span className="w-label">습도</span>
+            <span className="w-value humidity">{currentWeather.humidity}%</span>
+          </div>
+          <div className="weather-message">
+            "오늘은 <strong>{currentWeather.status}</strong>! 시원한 냉면 주문이 늘어날 것 같아요."
+          </div>
+        </div>
+      </section>
+
+      {/* 2. 중단: 필터 컨트롤 패널 */}
+      <section className="control-panel-card">
+        <div className="panel-header">
+          <h4>📊 맞춤형 매출 분석 조건</h4>
+          <p>과거 데이터를 기반으로 최적의 광고 전략을 세워보세요.</p>
+        </div>
+        
+        <div className="panel-body">
+          {/* 슬라이더 그룹 */}
+          <div className="control-group sliders">
+            {/* 기온 */}
+            <div className="control-item">
+              <div className="label-row">
+                <label>기온 설정</label>
+                <div className="value-display">
+                  <span className="current-val">{tempLabel}</span>
+                  <button 
+                    className={`bm-toggle-btn ${isTempAll ? 'active' : ''}`}
+                    onClick={() => setIsTempAll(!isTempAll)}
+                    disabled={isLoading}
+                  >
+                    전체
+                  </button>
+                </div>
+              </div>
+              <input 
+                type="range" min="-13" max="4" 
+                value={selectedTemp} 
+                onChange={(e) => setSelectedTemp(Number(e.target.value))}
+                disabled={isLoading || isTempAll}
+                className="bm-slider"
+              />
+            </div>
+
+            {/* 습도 */}
+            <div className="control-item">
+              <div className="label-row">
+                <label>습도 설정</label>
+                <div className="value-display">
+                  <span className="current-val">{humidityLabel}</span>
+                  <button 
+                    className={`bm-toggle-btn ${isHumidityAll ? 'active' : ''}`}
+                    onClick={() => setIsHumidityAll(!isHumidityAll)}
+                    disabled={isLoading}
+                  >
+                    전체
+                  </button>
+                </div>
+              </div>
+              <input 
+                type="range" min="0" 
+                max={availableHumidities.length > 0 ? availableHumidities.length - 1 : 0}
+                value={humiditySliderIndex >= 0 ? humiditySliderIndex : 0}
+                onChange={(e) => setSelectedHumidity(availableHumidities[+e.target.value])}
+                disabled={isLoading || isHumidityAll || availableHumidities.length === 0}
+                className="bm-slider"
+              />
+            </div>
+          </div>
+
+          {/* 드롭다운 그룹 */}
+          <div className="control-group dropdowns">
+            <div className="dropdown-item">
+              <label>시간대</label>
+              <select value={selectedHour} onChange={(e) => setSelectedHour(e.target.value)} disabled={isLoading} className="bm-select">
+                <option value="ALL">전체 시간대</option>
+                {Object.entries(HOUR_OPTIONS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+              </select>
+            </div>
+            <div className="dropdown-item">
+              <label>요일</label>
+              <select value={selectedDay} onChange={(e) => setSelectedDay(e.target.value)} disabled={isLoading} className="bm-select">
+                <option value="ALL">전체 요일</option>
+                {Object.entries(DAY_OPTIONS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+              </select>
+            </div>
+            <div className="dropdown-item">
+              <label>성별</label>
+              <select value={selectedSex} onChange={(e) => setSelectedSex(e.target.value)} disabled={isLoading} className="bm-select">
+                <option value="ALL">전체 성별</option>
+                {Object.entries(SEX_OPTIONS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+              </select>
+            </div>
+            <div className="dropdown-item">
+              <label>연령대</label>
+              <select value={selectedAge} onChange={(e) => setSelectedAge(e.target.value)} disabled={isLoading} className="bm-select">
+                <option value="ALL">전체 연령대</option>
+                {Object.entries(AGE_OPTIONS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. 하단: 차트 영역 */}
+      <section className="chart-section-card">
+        <div className="chart-header">
+          <h4>업종별 예상 매출액</h4>
+        </div>
+        <div className="chart-wrapper">
+          <Plot
+            data={[{
               x: chartData.x,
               y: chartData.y,
               type: 'bar',
-              marker: { color: 'rgb(55, 128, 191)' },
-            },
-          ]}
-          layout={{
-            title: getChartTitle(),
-            xaxis: { title: { text: '업종' }, automargin: true, autorange: true }, // '업종'
-            yaxis: { title: { text: '매출액 (만원)' }, autorange: true, tickformat: ',.0f' }, // '만원'
-            height: 600,
-            // transition: { duration: 500, easing: 'cubic-in-out' },
-            uirevision: 'true',
-            annotations: chartAnnotations
-          }}
-          revision={chartRevision.current} 
-          useResizeHandler={true}
-          style={{ width: '100%', height: '100%' }}
-          config={{ 
-            responsive: true,
-            displayModeBar: true // 도구 모음 표시 (이전 요청 반영)
-          }}
-        />
-      </div>
-
-      {/* 2. 기온 슬라이더 (변경 없음) */}
-      <div className="slider-container">
-        <label htmlFor="temp-slider">
-          <span className="slider-label-text">기온 선택: {tempLabel}</span>
-          <button 
-            className={`toggle-all-button ${isTempAll ? 'active' : ''}`}
-            onClick={() => setIsTempAll(prev => !prev)}
-            disabled={isLoading}
-          >
-            {isTempAll ? '기온 선택' : '전체'}
-          </button>
-        </label>
-        <input
-          type="range" id="temp-slider" min="-13" max="4"
-          value={selectedTemp}
-          onChange={(e) => setSelectedTemp(Number(e.target.value))}
-          className="slider"
-          disabled={isLoading || isTempAll}
-        />
-      </div>
-
-      {/* 3. 습도 슬라이더 (변경 없음) */}
-      <div className="slider-container">
-        <label htmlFor="humidity-slider">
-          <span className="slider-label-text">습도 선택: {humidityLabel}</span>
-          <button 
-            className={`toggle-all-button ${isHumidityAll ? 'active' : ''}`}
-            onClick={() => setIsHumidityAll(prev => !prev)}
-            disabled={isLoading}
-          >
-            {isHumidityAll ? '습도 선택' : '전체'}
-          </button>
-        </label>
-        <input
-          type="range" id="humidity-slider"
-          min="0"
-          max={availableHumidities.length > 0 ? availableHumidities.length - 1 : 0}
-          value={humiditySliderIndex >= 0 ? humiditySliderIndex : 0}
-          onChange={(e) => setSelectedHumidity(availableHumidities[+e.target.value])}
-          className="slider"
-          disabled={isLoading || isHumidityAll || availableHumidities.length === 0}
-        />
-      </div>
-
-      {/* 4. [수정] 필터 선택 상자 컨테이너 (4개 항목) */}
-      <div className="filter-container">
-        {/* 시간대 필터 [신규] */}
-        <div className="filter-item">
-          <label htmlFor="hour-filter">시간대</label>
-          <select id="hour-filter" className="filter-select" value={selectedHour} onChange={(e) => setSelectedHour(e.target.value)} disabled={isLoading}>
-            <option value="ALL">전체 시간대</option>
-            {Object.entries(HOUR_OPTIONS).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
-          </select>
+              marker: { color: '#2ac1bc' }, // 배민 민트색 적용
+              hoverinfo: 'x+y',
+            }]}
+            layout={{
+              // title: '제거 (HTML 헤더로 대체)',
+              xaxis: { title: { text: '업종', font: {size: 12, color: '#666'} }, automargin: true, tickfont: {size: 11} },
+              yaxis: { title: { text: '매출액 (만원)', font: {size: 12, color: '#666'} }, autorange: true, tickformat: ',.0f' },
+              margin: { l: 60, r: 20, b: 80, t: 20 }, // 여백 최적화
+              height: 500,
+              autosize: true,
+              paper_bgcolor: 'rgba(0,0,0,0)',
+              plot_bgcolor: 'rgba(0,0,0,0)',
+              // transition: { duration: 500, easing: 'cubic-in-out' },
+              uirevision: 'true',
+              annotations: chartAnnotations,
+              font: { family: 'Pretendard, sans-serif' }
+            }}
+            revision={chartRevision.current} 
+            useResizeHandler={true}
+            style={{ width: '100%', height: '100%' }}
+            config={{ displayModeBar: false }} // 깔끔하게 숨김
+          />
         </div>
-        {/* 성별 필터 */}
-        <div className="filter-item">
-          <label htmlFor="sex-filter">성별</label>
-          <select id="sex-filter" className="filter-select" value={selectedSex} onChange={(e) => setSelectedSex(e.target.value)} disabled={isLoading}>
-            <option value="ALL">전체 성별</option>
-            {Object.entries(SEX_OPTIONS).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
-          </select>
-        </div>
-        {/* 연령대 필터 */}
-        <div className="filter-item">
-          <label htmlFor="age-filter">연령대</label>
-          <select id="age-filter" className="filter-select" value={selectedAge} onChange={(e) => setSelectedAge(e.target.value)} disabled={isLoading}>
-            <option value="ALL">전체 연령대</option>
-            {Object.entries(AGE_OPTIONS).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
-          </select>
-        </div>
-        {/* 요일 필터 */}
-        <div className="filter-item">
-          <label htmlFor="day-filter">요일</label>
-          <select id="day-filter" className="filter-select" value={selectedDay} onChange={(e) => setSelectedDay(e.target.value)} disabled={isLoading}>
-            <option value="ALL">전체 요일</option>
-            {Object.entries(DAY_OPTIONS).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
-          </select>
-        </div>
-      </div>
+      </section>
 
     </div>
   );

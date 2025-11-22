@@ -1,143 +1,272 @@
-/* SalesBarChart.css (필터 4개 대응) */
+/* SalesBarChart.css */
 
-.main-container {
+/* 기본 레이아웃 세팅 */
+.baemin-dashboard {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #333;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-  margin-bottom: 50px;
-  width: 100%;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  gap: 20px;
 }
 
-.slider-container {
-  width: 90%;
-  max-width: 1000px;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03); 
-  margin-top: 20px;
-  box-sizing: border-box; 
-  font-size: 1.1em;
-  color: #333;
-  margin-bottom: -10px; 
+/* --- 공통 카드 스타일 --- */
+section.weather-widget-card,
+section.control-panel-card,
+section.chart-section-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); /* 부드러운 그림자 */
+  border: 1px solid #eee;
+  overflow: hidden;
 }
 
-.slider-container:last-of-type {
-  margin-bottom: 0;
+/* --- 1. 날씨 위젯 스타일 --- */
+.weather-widget-card {
+  padding: 20px 30px;
 }
 
-.slider-container label {
+.widget-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+.widget-header h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.update-time {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.widget-body {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.weather-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.w-label {
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.w-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.w-value.temp { color: #ff6b6b; } /* 온도 포인트 컬러 */
+.w-value.rain { color: #4d96ff; } /* 비 포인트 컬러 */
+
+.weather-message {
+  flex-grow: 1;
+  background-color: #f0fbfa; /* 아주 연한 민트 배경 */
+  padding: 15px;
+  border-radius: 8px;
+  color: #333;
+  font-size: 0.95rem;
+  border-left: 4px solid #2ac1bc; /* 배민 민트 라인 */
+}
+
+/* --- 2. 컨트롤 패널 스타일 --- */
+.control-panel-card .panel-header {
+  background-color: #f8f9fa;
+  padding: 15px 25px;
+  border-bottom: 1px solid #eee;
+}
+
+.control-panel-card .panel-header h4 {
+  margin: 0 0 5px 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.control-panel-card .panel-header p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.panel-body {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* 슬라이더 그룹 */
+.control-group.sliders {
+  display: flex;
+  gap: 40px;
+}
+
+.control-item {
+  flex: 1;
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.label-row label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.value-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.current-val {
+  font-weight: 700;
+  color: #2ac1bc; /* 배민 민트 */
+}
+
+.bm-toggle-btn {
+  background: #fff;
+  border: 1px solid #ddd;
+  color: #666;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  /* transition: all 0.2s; */
+}
+
+.bm-toggle-btn.active {
+  background: #333;
+  color: #fff;
+  border-color: #333;
+}
+
+/* 커스텀 슬라이더 */
+.bm-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 3px;
+  outline: none;
+}
+
+.bm-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border: 2px solid #2ac1bc;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-top: -7px; /* thumb 중앙 정렬 */
+}
+
+.bm-slider:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 드롭다운 그룹 */
+.control-group.dropdowns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4열 그리드 */
+  gap: 15px;
+  padding-top: 15px;
+  border-top: 1px dashed #eee;
+}
+
+.dropdown-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dropdown-item label {
+  font-size: 0.85rem;
+  color: #777;
   font-weight: 500;
 }
 
-.slider-label-text {
-  flex-grow: 1;
-}
-
-.toggle-all-button {
-  padding: 5px 10px;
-  font-size: 0.8em;
-  font-weight: 600;
-  color: #337ab7;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  cursor: pointer;
-  /* transition: all 0.2s ease; */
-  flex-shrink: 0;
-  margin-left: 15px;
-}
-
-.toggle-all-button:hover {
-  background-color: #f0f0f0;
-  border-color: #999;
-}
-
-.toggle-all-button.active {
-  background-color: #337ab7;
-  color: #fff;
-  border-color: #337ab7;
-}
-
-.toggle-all-button:disabled,
-.filter-select:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-  background-color: #eee;
-}
-
-.slider {
+.bm-select {
   width: 100%;
-  cursor: pointer;
-}
-
-.slider:disabled {
-  cursor: not-allowed;
-  opacity: 0.4;
-}
-
-/* [수정] 4개 항목을 위한 flex-wrap 추가 */
-.filter-container {
-  display: flex;
-  flex-wrap: wrap; /* 창이 좁아지면 줄바꿈 허용 */
-  justify-content: space-between;
-  width: 90%;
-  max-width: 1000px;
-  margin-top: 20px;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-sizing: border-box;
-  gap: 20px; /* 아이템 사이 간격 */
-}
-
-/* [수정] 4개 항목이므로 flex-basis 조정 */
-.filter-item {
-  flex-grow: 1;
-  flex-basis: 200px; /* 한 항목의 최소 너비 (약 2개씩 보이도록) */
-  display: flex;
-  flex-direction: column;
-}
-
-.filter-item label {
-  font-size: 0.9em;
-  color: #555;
-  margin-bottom: 8px;
-}
-
-.filter-select {
   padding: 10px;
-  font-size: 1em;
+  border: 1px solid #ddd;
   border-radius: 6px;
-  border: 1px solid #ccc;
+  font-size: 0.9rem;
+  color: #333;
   background-color: #fff;
   cursor: pointer;
 }
 
-.chart-container {
-  width: 90%;
-  max-width: 1000px;
-  min-height: 600px; 
-  margin: 40px auto 20px auto;
-  padding: 20px;
-  background-color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.bm-select:focus {
+  border-color: #2ac1bc;
+  outline: none;
+}
+
+/* --- 3. 차트 영역 스타일 --- */
+.chart-section-card {
+  min-height: 500px;
+  padding: 0;
+}
+
+.chart-header {
+  padding: 20px 25px;
+  border-bottom: 1px solid #eee;
+}
+
+.chart-header h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.chart-wrapper {
+  width: 100%;
+  height: 500px;
+  padding: 10px;
   box-sizing: border-box;
 }
 
-.loading-message {
-  font-size: 1.2em;
-  color: #555;
-  padding: 40px;
-  text-align: center;
+/* 반응형 (모바일 등) */
+@media (max-width: 768px) {
+  .widget-body {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .control-group.sliders {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .control-group.dropdowns {
+    grid-template-columns: 1fr 1fr; /* 2열로 변경 */
+  }
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import LoginPage from './LoginPage';
-import Dashboard from './Dashboard';
+import Main from './Main';
 import './components/Admin.css'; // 전체 스타일
 
 function App() {
@@ -10,7 +10,7 @@ function App() {
   return (
     <div className="app-root">
       {isLoggedIn ? (
-        <Dashboard onLogout={() => setIsLoggedIn(false)} />
+        <Main onLogout={() => setIsLoggedIn(false)} />
       ) : (
         <LoginPage onLogin={() => setIsLoggedIn(true)} />
       )}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Dashboard from './components/Dashboard';
 import SalesBarChart from './components/SalesBarChart';
 import AdSimulation from './components/AdSimulation'; // [신규] 임포트
 
@@ -9,12 +10,14 @@ const MENU_ITEMS = [
   { id: 'simulation', label: '타겟광고 시뮬레이션', icon: '📱' }, 
 ];
 
-const Dashboard = ({ onLogout }) => {
-  const [activeMenu, setActiveMenu] = useState('analysis'); 
+const Main = ({ onLogout }) => {
+  const [activeMenu, setActiveMenu] = useState('dashboard'); 
 
   // 메뉴에 따른 콘텐츠 렌더링 함수
   const renderContent = () => {
     switch (activeMenu) {
+      case 'dashboard':
+        return <Dashboard />;
       case 'analysis':
         return <SalesBarChart />;
       case 'simulation': // [신규]
@@ -71,6 +74,7 @@ const Dashboard = ({ onLogout }) => {
             {activeMenu === 'analysis' && (
                <>
                 <button className="tab-button active">기온별 분석</button>
+                <button className="tab-button">카테고리별 분석</button>
                 <button className="tab-button">요일별 분석</button>
                </>
             )}
@@ -85,4 +89,4 @@ const Dashboard = ({ onLogout }) => {
   );
 };
 
-export default Dashboard;
+export default Main;

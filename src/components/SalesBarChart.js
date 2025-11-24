@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'; // useRef는 애니메이션용이었다면 제거 가능하지만 일단 유지
+import React, { useState, useEffect } from 'react'; 
 import Plot from 'react-plotly.js';
 import { csvParse } from 'd3-dsv';
 import './SalesBarChart.css';
@@ -42,10 +42,10 @@ const SalesBarChart = () => {
 
   // 임의의 현재 날씨 데이터
   const currentWeather = {
-    temp: 18.5,
-    rain: 0,
-    humidity: 45,
-    status: '맑음 ☀️'
+    temp: 1.5,
+    rain: 80,
+    humidity: 75,
+    status: '비 🌧️'
   };
 
   // --- [신규] JSON 다운로드 핸들러 ---
@@ -217,8 +217,8 @@ const SalesBarChart = () => {
       {/* 1. 상단: 현재 날씨 위젯 */}
       <section className="weather-widget-card">
         <div className="widget-header">
-          <h4>🌤️ 현재 우리 동네 날씨</h4>
-          <span className="update-time">2024.05.20 14:00 기준</span>
+          <h4>🌧️ 현재 우리 동네 날씨</h4>
+          <span className="update-time">2024.01.02 14:00 기준</span>
         </div>
         <div className="widget-body">
           <div className="weather-item">
@@ -234,7 +234,7 @@ const SalesBarChart = () => {
             <span className="w-value humidity">{currentWeather.humidity}%</span>
           </div>
           <div className="weather-message">
-            "오늘은 <strong>{currentWeather.status}</strong>! 시원한 냉면 주문이 늘어날 것 같아요."
+            "오늘은 <strong>{currentWeather.status}</strong>! 따끈한 국물요리 주문이 늘어날 것 같아요."
           </div>
         </div>
       </section>
@@ -305,7 +305,7 @@ const SalesBarChart = () => {
 
           {/* 드롭다운 그룹 */}
           <div className="control-group dropdowns">
-            <div className="dropdown-item">
+            {/* <div className="dropdown-item">
               <label>시간대</label>
               <select value={selectedHour} onChange={(e) => setSelectedHour(e.target.value)} disabled={isLoading} className="bm-select">
                 <option value="ALL">전체 시간대</option>
@@ -318,7 +318,7 @@ const SalesBarChart = () => {
                 <option value="ALL">전체 요일</option>
                 {Object.entries(DAY_OPTIONS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
               </select>
-            </div>
+            </div> */}
             <div className="dropdown-item">
               <label>성별</label>
               <select value={selectedSex} onChange={(e) => setSelectedSex(e.target.value)} disabled={isLoading} className="bm-select">

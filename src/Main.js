@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Dashboard from './components/Dashboard';
-import SalesBarChart from './components/SalesBarChart';
-import AdSimulation from './components/AdSimulation'; // [신규] 임포트
+import SalesBarChart from './components/SalesBarChart'; // 기온별 분석
+import CategoryAnalysis from './components/CategoryAnalysis'; // 카테고리별 분석
+import DayAnalysis from './components/DayAnalysis'; // 시간대별 분석
+import AdSimulation from './components/AdSimulation'; // 타겟광고 시뮬레이션
 
 const MENU_ITEMS = [
   { id: 'dashboard', label: '대시보드', icon: '🏠' },
@@ -12,15 +14,27 @@ const MENU_ITEMS = [
 
 const Main = ({ onLogout }) => {
   const [activeMenu, setActiveMenu] = useState('dashboard'); 
+  // [신규] 매출 분석 내부의 탭 상태 관리 ('temp' | 'category' | 'day')
+  const [analysisTab, setAnalysisTab] = useState('temp'); 
 
-  // 메뉴에 따른 콘텐츠 렌더링 함수
+  // 메뉴 및 탭에 따른 콘텐츠 렌더링 함수
   const renderContent = () => {
     switch (activeMenu) {
       case 'dashboard':
         return <Dashboard />;
       case 'analysis':
-        return <SalesBarChart />;
-      case 'simulation': // [신규]
+        // 매출 분석 메뉴일 때, 내부 탭 상태에 따라 분기
+        switch (analysisTab) {
+          case 'temp':
+            return <SalesBarChart />;
+          case 'category':
+            return <CategoryAnalysis />;
+          case 'day':
+            return <DayAnalysis />;
+          default:
+            return <SalesBarChart />;
+        }
+      case 'simulation': 
         return <AdSimulation />;
       default:
         return (
@@ -44,7 +58,11 @@ const Main = ({ onLogout }) => {
             <button
               key={item.id}
               className={`nav-item ${activeMenu === item.id ? 'active' : ''}`}
-              onClick={() => setActiveMenu(item.id)}
+              onClick={() => {
+                setActiveMenu(item.id);
+                // 메뉴 이동 시 분석 탭을 기본값(기온)으로 초기화하고 싶다면 아래 주석 해제
+                // if (item.id === 'analysis') setAnalysisTab('temp');
+              }}
             >
               <span className="icon">{item.icon}</span>
               {item.label}
@@ -69,17 +87,33 @@ const Main = ({ onLogout }) => {
         </header>
 
         <div className="content-wrapper">
-          {/* 상단 탭 버튼은 '매출 분석'에서만 보여주거나 공통으로 둘 수 있음 (여기선 유지) */}
+          {/* 상단 탭 버튼은 '매출 분석' 메뉴일 때만 노출 */}
           <div className="content-filter-bar">
             {activeMenu === 'analysis' && (
                <>
-                <button className="tab-button active">기온별 분석</button>
-                <button className="tab-button">카테고리별 분석</button>
-                <button className="tab-button">요일별 분석</button>
+                <button 
+                  className={`tab-button ${analysisTab === 'temp' ? 'active' : ''}`}
+                  onClick={() => setAnalysisTab('temp')}
+                >
+                  기온별 분석
+                </button>
+                <button 
+                  className={`tab-button ${analysisTab === 'category' ? 'active' : ''}`}
+                  onClick={() => setAnalysisTab('category')}
+                >
+                  카테고리별 분석
+                </button>
+                <button 
+                  className={`tab-button ${analysisTab === 'day' ? 'active' : ''}`}
+                  onClick={() => setAnalysisTab('day')}
+                >
+                  요일별 분석
+                </button>
                </>
             )}
           </div>
 
+          {/* 실제 콘텐츠 영역 */}
           <div className="chart-card-wrapper">
             {renderContent()}
           </div>

@@ -1,25 +1,26 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect } from 'react';
 import Plot from 'react-plotly.js';
-import { csvParse } from 'd3-dsv';
+// [수정] d3-dsv 제거 (Context에서 처리함)
+import { useData } from '../contexts/DataContext'; // [신규] Context Hook 임포트
 import './SalesBarChart.css';
 
-const CSV_FILE_PATH = '/suwon_food_weather_2024_01.csv';
+// [수정] CSV_FILE_PATH 상수 제거 (Context에서 처리함)
 
 const SEX_OPTIONS = { 'F': '여성', 'M': '남성' };
 const AGE_OPTIONS = {
   1: '0-9세', 2: '10-19세', 3: '20-29세', 4: '30-39세',
   5: '40-49세', 6: '50-59세', 7: '60-69세', 8: '70-79세', 9: '80세 이상'
 };
-const DAY_OPTIONS = {
-  1: '월요일', 2: '화요일', 3: '수요일', 4: '목요일',
-  5: '금요일', 6: '토요일', 7: '일요일'
-};
-const HOUR_OPTIONS = {
-  1: '00-07시 (새벽)', 2: '07-09시 (아침)', 3: '09-11시 (오전)',
-  4: '11-14시 (점심)', 5: '14-17시 (오후)', 6: '17-18시 (저녁1)',
-  7: '18-20시 (저녁2)', 8: '20-21시 (저녁3)', 9: '21-23시 (밤)',
-  10: '23-24시 (심야)'
-};
+// const DAY_OPTIONS = {
+//   1: '월요일', 2: '화요일', 3: '수요일', 4: '목요일',
+//   5: '금요일', 6: '토요일', 7: '일요일'
+// };
+// const HOUR_OPTIONS = {
+//   1: '00-07시 (새벽)', 2: '07-09시 (아침)', 3: '09-11시 (오전)',
+//   4: '11-14시 (점심)', 5: '14-17시 (오후)', 6: '17-18시 (저녁1)',
+//   7: '18-20시 (저녁2)', 8: '20-21시 (저녁3)', 9: '21-23시 (밤)',
+//   10: '23-24시 (심야)'
+// };
 
 const SalesBarChart = () => {
   // --- State 정의 ---
@@ -29,18 +30,21 @@ const SalesBarChart = () => {
   
   const [selectedSex, setSelectedSex] = useState('ALL');
   const [selectedAge, setSelectedAge] = useState('ALL');
-  const [selectedDay, setSelectedDay] = useState('ALL');
-  const [selectedHour, setSelectedHour] = useState('ALL');
+  // const [selectedDay, setSelectedDay] = useState('ALL');
+  // const [selectedHour, setSelectedHour] = useState('ALL');
   
   const [isTempAll, setIsTempAll] = useState(false);
   const [isHumidityAll, setIsHumidityAll] = useState(false);
 
-  const [fullData, setFullData] = useState([]);
-  const [chartDisplayData, setChartDisplayData] = useState(null);
-  const [insightData, setInsightData] = useState(null); // 인사이트 데이터
-  const [isLoading, setIsLoading] = useState(true);
+  // [수정] 로컬 state 대신 Context에서 데이터 가져오기
+  // const [fullData, setFullData] = useState([]);  <-- 삭제
+  // const [isLoading, setIsLoading] = useState(true); <-- 삭제
+  const { fullData, isDataLoading: isLoading } = useData(); // 전역 데이터 사용
 
-  // 임의의 현재 날씨 데이터
+  const [chartDisplayData, setChartDisplayData] = useState(null);
+  const [insightData, setInsightData] = useState(null);
+
+  // 임의의 현재 날씨 데이터 (제공해주신 값 유지)
   const currentWeather = {
     temp: 1.5,
     rain: 80,
@@ -48,31 +52,28 @@ const SalesBarChart = () => {
     status: '비 🌧️'
   };
 
-  // --- [신규] JSON 다운로드 핸들러 ---
+  // --- JSON 다운로드 핸들러 (유지) ---
   const handleDownloadJSON = () => {
     if (!chartDisplayData || chartDisplayData.x.length === 0) {
       alert("다운로드할 데이터가 없습니다.");
       return;
     }
 
-    // 1. 현재 필터링 조건 정리
     const conditions = {
       temperature: isTempAll ? 'ALL' : selectedTemp,
       humidity: isHumidityAll ? 'ALL' : selectedHumidity,
-      hour: selectedHour === 'ALL' ? 'ALL' : HOUR_OPTIONS[selectedHour],
-      day: selectedDay === 'ALL' ? 'ALL' : DAY_OPTIONS[selectedDay],
+      // hour: selectedHour === 'ALL' ? 'ALL' : HOUR_OPTIONS[selectedHour],
+      // day: selectedDay === 'ALL' ? 'ALL' : DAY_OPTIONS[selectedDay],
       sex: selectedSex === 'ALL' ? 'ALL' : SEX_OPTIONS[selectedSex],
       age: selectedAge === 'ALL' ? 'ALL' : AGE_OPTIONS[selectedAge]
     };
 
-    // 2. 상위 10개 업종 데이터 추출
     const top10 = chartDisplayData.x.slice(0, 10).map((category, index) => ({
       rank: index + 1,
       category: category,
-      amount: chartDisplayData.y[index] // 해당 인덱스의 매출액
+      amount: chartDisplayData.y[index]
     }));
 
-    // 3. 최종 저장할 데이터 객체 생성
     const exportData = {
       title: "배달의민족 타겟광고 시뮬레이션 데이터",
       created_at: new Date().toLocaleString(),
@@ -80,7 +81,6 @@ const SalesBarChart = () => {
       top_10_rankings: top10
     };
 
-    // 4. JSON 파일 생성 및 다운로드 트리거
     const jsonString = JSON.stringify(exportData, null, 2);
     const blob = new Blob([jsonString], { type: "application/json" });
     const href = URL.createObjectURL(blob);
@@ -93,40 +93,13 @@ const SalesBarChart = () => {
   };
 
 
-  // --- Effect 1: CSV 파일 로드 ---
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(CSV_FILE_PATH);
-        if (!response.ok) throw new Error(`Failed to fetch CSV: ${response.statusText}`);
-        const csvText = await response.text();
-
-        const parsedData = csvParse(csvText, (row) => {
-          return {
-            temp: Math.round(+row.temp),
-            humidity: Math.round(+row.humidity),
-            category: row.card_tpbuz_nm_2,
-            amount: +row.amt / 10000, // 만원 단위
-            sex: row.sex,
-            age: +row.age,
-            day: +row.day,
-            hour: +row.hour
-          };
-        });
-        
-        setFullData(parsedData);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("CSV 로딩 중 오류 발생:", error);
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  // [삭제] Effect 1: CSV 파일 로드 부분 삭제됨 (Context가 대신 함)
 
   // --- Effect 2: 유효 습도 목록 업데이트 ---
+  // [수정] isLoading 의존성 추가 및 데이터 로드 대기 처리
   useEffect(() => {
-    if (fullData.length === 0) return;
+    if (isLoading || fullData.length === 0) return; // 로딩 중이면 중단
+
     let dataForHumidityCalc = fullData;
     if (!isTempAll) {
       dataForHumidityCalc = fullData.filter(row => row.temp === selectedTemp);
@@ -138,29 +111,31 @@ const SalesBarChart = () => {
     if (!isHumidityAll && !uniqueHumidities.includes(selectedHumidity)) {
       setSelectedHumidity(uniqueHumidities[0] || null);
     }
-  }, [fullData, selectedTemp, isTempAll, isHumidityAll, selectedHumidity]);
+  }, [fullData, selectedTemp, isTempAll, isHumidityAll, selectedHumidity, isLoading]);
 
   // --- Effect 3: 차트 데이터 재계산 & 인사이트 ---
+  // [수정] isLoading 의존성 추가
   useEffect(() => {
-    if (fullData.length === 0 || (!isHumidityAll && selectedHumidity === null)) {
+    if (isLoading || fullData.length === 0 || (!isHumidityAll && selectedHumidity === null)) {
       setChartDisplayData(null);
       setInsightData(null);
       return;
     }
     
     const ageFilter = selectedAge === 'ALL' ? 'ALL' : Number(selectedAge);
-    const dayFilter = selectedDay === 'ALL' ? 'ALL' : Number(selectedDay);
-    const hourFilter = selectedHour === 'ALL' ? 'ALL' : Number(selectedHour);
+    // const dayFilter = selectedDay === 'ALL' ? 'ALL' : Number(selectedDay); // UI에서 주석처리됨
+    // const hourFilter = selectedHour === 'ALL' ? 'ALL' : Number(selectedHour); // UI에서 주석처리됨
 
     const filteredData = fullData.filter(row => {
       const tempMatch = isTempAll ? true : (row.temp === selectedTemp);
       const humidityMatch = isHumidityAll ? true : (row.humidity === selectedHumidity);
       const sexMatch = (selectedSex === 'ALL') ? true : (row.sex === selectedSex);
       const ageMatch = (ageFilter === 'ALL') ? true : (row.age === ageFilter);
-      const dayMatch = (dayFilter === 'ALL') ? true : (row.day === dayFilter);
-      const hourMatch = (hourFilter === 'ALL') ? true : (row.hour === hourFilter);
+      // const dayMatch = (dayFilter === 'ALL') ? true : (row.day === dayFilter);
+      // const hourMatch = (hourFilter === 'ALL') ? true : (row.hour === hourFilter);
       
-      return tempMatch && humidityMatch && sexMatch && ageMatch && dayMatch && hourMatch;
+      // 주석 처리된 필터는 조건에서 제외 (항상 true)
+      return tempMatch && humidityMatch && sexMatch && ageMatch; 
     });
 
     const salesMap = filteredData.reduce((acc, row) => {
@@ -191,7 +166,7 @@ const SalesBarChart = () => {
 
     setChartDisplayData(plotlyData);
 
-  }, [fullData, selectedTemp, selectedHumidity, selectedSex, selectedAge, selectedDay, selectedHour, isTempAll, isHumidityAll]);
+  }, [fullData, selectedTemp, selectedHumidity, selectedSex, selectedAge, isTempAll, isHumidityAll, isLoading]); // 의존성 업데이트
 
   // --- 렌더링 로직 ---
   const humidityLabel = isHumidityAll ? "전체" : (selectedHumidity !== null ? `${selectedHumidity}%` : "-");
@@ -202,7 +177,8 @@ const SalesBarChart = () => {
   let chartData = { x: [], y: [] };
   
   if (isLoading) {
-    chartAnnotations.push({ text: '데이터 분석 중...', xref: 'paper', yref: 'paper', x: 0.5, y: 0.5, showarrow: false, font: { size: 16, color: '#888' }});
+    // [수정] 로딩 메시지 문구 변경 (Context 로딩 상태)
+    chartAnnotations.push({ text: '전체 데이터 로딩 중...', xref: 'paper', yref: 'paper', x: 0.5, y: 0.5, showarrow: false, font: { size: 16, color: '#888' }});
   } else if (chartDisplayData && chartDisplayData.x.length > 0) {
     chartData = chartDisplayData;
   } else {
@@ -246,7 +222,7 @@ const SalesBarChart = () => {
             <h4>📊 맞춤형 매출 분석 조건</h4>
             <p>과거 데이터를 기반으로 최적의 광고 전략을 세워보세요.</p>
           </div>
-          {/* [신규] 다운로드 버튼 추가 */}
+          {/* 다운로드 버튼 */}
           <button className="bm-download-btn" onClick={handleDownloadJSON} disabled={isLoading}>
             📥 시뮬레이션 데이터 다운로드
           </button>
@@ -303,7 +279,7 @@ const SalesBarChart = () => {
             </div>
           </div>
 
-          {/* 드롭다운 그룹 */}
+          {/* 드롭다운 그룹 (시간, 요일 주석 처리 유지) */}
           <div className="control-group dropdowns">
             {/* <div className="dropdown-item">
               <label>시간대</label>

@@ -1,0 +1,129 @@
+/* DayAnalysis.css */
+
+.day-analysis-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Pretendard', sans-serif;
+  color: #333;
+}
+
+.analysis-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.analysis-header h3 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+.analysis-header p {
+  color: #888;
+}
+
+/* 요일 탭 */
+.day-tabs-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.day-tabs {
+  display: flex;
+  gap: 10px;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 50px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.day-tab {
+  padding: 12px 24px;
+  border: none;
+  background: transparent;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #888;
+  cursor: pointer;
+  /* transition: all 0.2s ease; */
+}
+
+.day-tab:hover {
+  background-color: #f1f3f5;
+  color: #333;
+}
+
+.day-tab.active {
+  background-color: #2ac1bc;
+  color: white;
+  box-shadow: 0 4px 10px rgba(42, 193, 188, 0.3);
+}
+
+/* 차트 섹션 */
+.chart-section {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  border: 1px solid #f0f0f0;
+  min-height: 400px;
+  margin-bottom: 30px;
+}
+
+.chart-box {
+  width: 100%;
+  height: 500px;
+}
+
+/* 인사이트 카드 */
+.insight-card {
+  background-color: #f0fbfa; /* 연한 민트 */
+  border-left: 6px solid #2ac1bc;
+  border-radius: 8px;
+  padding: 25px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.insight-icon {
+  font-size: 2.5rem;
+}
+
+.insight-content h4 {
+  margin: 0 0 10px 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.insight-content .highlight {
+  color: #2ac1bc;
+  font-weight: 800;
+  font-size: 1.3rem;
+}
+
+.tip-text {
+  margin: 0;
+  color: #555;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+  .day-tabs {
+    flex-wrap: wrap;
+    justify-content: center;
+    border-radius: 20px;
+  }
+  
+  .day-tab {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+}

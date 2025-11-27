@@ -11,16 +11,16 @@ const AGE_OPTIONS = {
   1: '0-9세', 2: '10-19세', 3: '20-29세', 4: '30-39세',
   5: '40-49세', 6: '50-59세', 7: '60-69세', 8: '70-79세', 9: '80세 이상'
 };
-// const DAY_OPTIONS = {
-//   1: '월요일', 2: '화요일', 3: '수요일', 4: '목요일',
-//   5: '금요일', 6: '토요일', 7: '일요일'
-// };
-// const HOUR_OPTIONS = {
-//   1: '00-07시 (새벽)', 2: '07-09시 (아침)', 3: '09-11시 (오전)',
-//   4: '11-14시 (점심)', 5: '14-17시 (오후)', 6: '17-18시 (저녁1)',
-//   7: '18-20시 (저녁2)', 8: '20-21시 (저녁3)', 9: '21-23시 (밤)',
-//   10: '23-24시 (심야)'
-// };
+const DAY_OPTIONS = {
+  1: '월요일', 2: '화요일', 3: '수요일', 4: '목요일',
+  5: '금요일', 6: '토요일', 7: '일요일'
+};
+const HOUR_OPTIONS = {
+  1: '00-07시 (새벽)', 2: '07-09시 (아침)', 3: '09-11시 (오전)',
+  4: '11-14시 (점심)', 5: '14-17시 (오후)', 6: '17-18시 (저녁1)',
+  7: '18-20시 (저녁2)', 8: '20-21시 (저녁3)', 9: '21-23시 (밤)',
+  10: '23-24시 (심야)'
+};
 
 const SalesBarChart = () => {
   // --- State 정의 ---
@@ -30,21 +30,22 @@ const SalesBarChart = () => {
   
   const [selectedSex, setSelectedSex] = useState('ALL');
   const [selectedAge, setSelectedAge] = useState('ALL');
-  // const [selectedDay, setSelectedDay] = useState('ALL');
-  // const [selectedHour, setSelectedHour] = useState('ALL');
+  const [selectedDay, setSelectedDay] = useState('ALL');
+  const [selectedHour, setSelectedHour] = useState('ALL');
   
   const [isTempAll, setIsTempAll] = useState(false);
   const [isHumidityAll, setIsHumidityAll] = useState(false);
 
+  // [신규] 데이터 기반 min/max 값 (초기값 설정용)
+  const [tempRange, setTempRange] = useState({ min: -13, max: 4 });
+
   // [수정] 로컬 state 대신 Context에서 데이터 가져오기
-  // const [fullData, setFullData] = useState([]);  <-- 삭제
-  // const [isLoading, setIsLoading] = useState(true); <-- 삭제
-  const { fullData, isDataLoading: isLoading } = useData(); // 전역 데이터 사용
+  const { fullData, isDataLoading: isLoading } = useData();
 
   const [chartDisplayData, setChartDisplayData] = useState(null);
   const [insightData, setInsightData] = useState(null);
 
-  // 임의의 현재 날씨 데이터 (제공해주신 값 유지)
+  // 임의의 현재 날씨 데이터
   const currentWeather = {
     temp: 1.5,
     rain: 80,
@@ -52,7 +53,24 @@ const SalesBarChart = () => {
     status: '비 🌧️'
   };
 
-  // --- JSON 다운로드 핸들러 (유지) ---
+  // --- [신규] 데이터 로드 시 기온 범위 자동 설정 ---
+  useEffect(() => {
+    if (!isLoading && fullData.length > 0) {
+      // 데이터에서 기온 min/max 찾기
+      let minT = 100, maxT = -100;
+      fullData.forEach(d => {
+        if (d.temp < minT) minT = d.temp;
+        if (d.temp > maxT) maxT = d.temp;
+      });
+      
+      setTempRange({ min: minT, max: maxT });
+      // 초기 선택값도 최소 기온으로 설정 (원한다면)
+      // setSelectedTemp(minT); 
+    }
+  }, [fullData, isLoading]);
+
+
+  // --- JSON 다운로드 핸들러 ---
   const handleDownloadJSON = () => {
     if (!chartDisplayData || chartDisplayData.x.length === 0) {
       alert("다운로드할 데이터가 없습니다.");
@@ -62,8 +80,8 @@ const SalesBarChart = () => {
     const conditions = {
       temperature: isTempAll ? 'ALL' : selectedTemp,
       humidity: isHumidityAll ? 'ALL' : selectedHumidity,
-      // hour: selectedHour === 'ALL' ? 'ALL' : HOUR_OPTIONS[selectedHour],
-      // day: selectedDay === 'ALL' ? 'ALL' : DAY_OPTIONS[selectedDay],
+      hour: selectedHour === 'ALL' ? 'ALL' : HOUR_OPTIONS[selectedHour],
+      day: selectedDay === 'ALL' ? 'ALL' : DAY_OPTIONS[selectedDay],
       sex: selectedSex === 'ALL' ? 'ALL' : SEX_OPTIONS[selectedSex],
       age: selectedAge === 'ALL' ? 'ALL' : AGE_OPTIONS[selectedAge]
     };
@@ -93,12 +111,9 @@ const SalesBarChart = () => {
   };
 
 
-  // [삭제] Effect 1: CSV 파일 로드 부분 삭제됨 (Context가 대신 함)
-
   // --- Effect 2: 유효 습도 목록 업데이트 ---
-  // [수정] isLoading 의존성 추가 및 데이터 로드 대기 처리
   useEffect(() => {
-    if (isLoading || fullData.length === 0) return; // 로딩 중이면 중단
+    if (isLoading || fullData.length === 0) return;
 
     let dataForHumidityCalc = fullData;
     if (!isTempAll) {
@@ -113,8 +128,7 @@ const SalesBarChart = () => {
     }
   }, [fullData, selectedTemp, isTempAll, isHumidityAll, selectedHumidity, isLoading]);
 
-  // --- Effect 3: 차트 데이터 재계산 & 인사이트 ---
-  // [수정] isLoading 의존성 추가
+  // --- Effect 3: 차트 데이터 재계산 ---
   useEffect(() => {
     if (isLoading || fullData.length === 0 || (!isHumidityAll && selectedHumidity === null)) {
       setChartDisplayData(null);
@@ -123,8 +137,8 @@ const SalesBarChart = () => {
     }
     
     const ageFilter = selectedAge === 'ALL' ? 'ALL' : Number(selectedAge);
-    // const dayFilter = selectedDay === 'ALL' ? 'ALL' : Number(selectedDay); // UI에서 주석처리됨
-    // const hourFilter = selectedHour === 'ALL' ? 'ALL' : Number(selectedHour); // UI에서 주석처리됨
+    // const dayFilter = selectedDay === 'ALL' ? 'ALL' : Number(selectedDay);
+    // const hourFilter = selectedHour === 'ALL' ? 'ALL' : Number(selectedHour);
 
     const filteredData = fullData.filter(row => {
       const tempMatch = isTempAll ? true : (row.temp === selectedTemp);
@@ -134,7 +148,6 @@ const SalesBarChart = () => {
       // const dayMatch = (dayFilter === 'ALL') ? true : (row.day === dayFilter);
       // const hourMatch = (hourFilter === 'ALL') ? true : (row.hour === hourFilter);
       
-      // 주석 처리된 필터는 조건에서 제외 (항상 true)
       return tempMatch && humidityMatch && sexMatch && ageMatch; 
     });
 
@@ -166,7 +179,7 @@ const SalesBarChart = () => {
 
     setChartDisplayData(plotlyData);
 
-  }, [fullData, selectedTemp, selectedHumidity, selectedSex, selectedAge, isTempAll, isHumidityAll, isLoading]); // 의존성 업데이트
+  }, [fullData, selectedTemp, selectedHumidity, selectedSex, selectedAge, isTempAll, isHumidityAll, isLoading]);
 
   // --- 렌더링 로직 ---
   const humidityLabel = isHumidityAll ? "전체" : (selectedHumidity !== null ? `${selectedHumidity}%` : "-");
@@ -177,7 +190,6 @@ const SalesBarChart = () => {
   let chartData = { x: [], y: [] };
   
   if (isLoading) {
-    // [수정] 로딩 메시지 문구 변경 (Context 로딩 상태)
     chartAnnotations.push({ text: '전체 데이터 로딩 중...', xref: 'paper', yref: 'paper', x: 0.5, y: 0.5, showarrow: false, font: { size: 16, color: '#888' }});
   } else if (chartDisplayData && chartDisplayData.x.length > 0) {
     chartData = chartDisplayData;
@@ -246,7 +258,10 @@ const SalesBarChart = () => {
                 </div>
               </div>
               <input 
-                type="range" min="-13" max="4" 
+                type="range" 
+                // [수정] 데이터 기반으로 동적 min/max 설정
+                min={tempRange.min} 
+                max={tempRange.max} 
                 value={selectedTemp} 
                 onChange={(e) => setSelectedTemp(Number(e.target.value))}
                 disabled={isLoading || isTempAll}
@@ -279,7 +294,7 @@ const SalesBarChart = () => {
             </div>
           </div>
 
-          {/* 드롭다운 그룹 (시간, 요일 주석 처리 유지) */}
+          {/* 드롭다운 그룹 */}
           <div className="control-group dropdowns">
             {/* <div className="dropdown-item">
               <label>시간대</label>

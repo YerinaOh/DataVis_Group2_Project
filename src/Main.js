@@ -8,15 +8,24 @@ import AdSimulation from './components/AdSimulation'; // 타겟광고 시뮬레�
 const MENU_ITEMS = [
   { id: 'dashboard', label: '대시보드', icon: '🏠' },
   { id: 'analysis', label: '매출 분석', icon: '📊' },
-  { id: 'ad-manage', label: '광고 관리', icon: '📢' },
   { id: 'simulation', label: '타겟광고 시뮬레이션', icon: '📱' }, 
+  { id: 'ad-manage', label: '광고 관리', icon: '📢' }, // 순서 변경됨 (시뮬레이션 아래로)
+  // { id: 'shop-info', label: '가게 관리', icon: '🏪' }, // 필요 시 추가
 ];
 
-const Main = ({ onLogout }) => {
+const Main = ({ onLogout, userProfile }) => {
   const [activeMenu, setActiveMenu] = useState('dashboard'); 
   // [신규] 매출 분석 내부의 탭 상태 관리 ('temp' | 'category' | 'day')
   const [analysisTab, setAnalysisTab] = useState('temp'); 
 
+  const filteredMenuItems = MENU_ITEMS.filter(item => {
+    // 사용자가 'sajang'이고 메뉴가 'simulation'이면 숨김(false)
+    if (userProfile.role === 'sajang' && item.id === 'simulation') {
+      return false;
+    }
+    return true; // 그 외에는 모두 표시
+  });
+  
   // 메뉴 및 탭에 따른 콘텐츠 렌더링 함수
   const renderContent = () => {
     switch (activeMenu) {
@@ -54,15 +63,12 @@ const Main = ({ onLogout }) => {
           <span className="admin-sub">Admin</span>
         </div>
         <nav className="sidebar-nav">
-          {MENU_ITEMS.map((item) => (
+          {/* [수정] MENU_ITEMS 대신 filteredMenuItems 사용 */}
+          {filteredMenuItems.map((item) => (
             <button
               key={item.id}
               className={`nav-item ${activeMenu === item.id ? 'active' : ''}`}
-              onClick={() => {
-                setActiveMenu(item.id);
-                // 메뉴 이동 시 분석 탭을 기본값(기온)으로 초기화하고 싶다면 아래 주석 해제
-                // if (item.id === 'analysis') setAnalysisTab('temp');
-              }}
+              onClick={() => setActiveMenu(item.id)}
             >
               <span className="icon">{item.icon}</span>
               {item.label}
@@ -78,11 +84,11 @@ const Main = ({ onLogout }) => {
       <main className="main-content">
         <header className="top-header">
           <div className="header-title">
-            <h3>{MENU_ITEMS.find(m => m.id === activeMenu).label}</h3>
+            <h3>{MENU_ITEMS.find(m => m.id === activeMenu)?.label}</h3>
           </div>
           <div className="user-profile">
-            <span className="shop-name">김민지 사원</span>
-            <span className="user-name">전략마케팅 기획팀</span>
+            <span className="shop-name">{userProfile.name}</span>
+            <span className="user-name">{userProfile.team}</span>
           </div>
         </header>
 

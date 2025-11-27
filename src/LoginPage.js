@@ -6,8 +6,8 @@ const LoginPage = ({ onLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // 컨셉 시안이므로 무조건 통과
-    onLogin();
+ 
+    onLogin(id);
   };
 
   return (

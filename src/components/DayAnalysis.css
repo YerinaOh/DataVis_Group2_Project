@@ -58,7 +58,7 @@
 }
 
 .day-tab.active {
-  background-color: #2ac1bc;
+  background-color: #ff3d00;
   color: white;
   box-shadow: 0 4px 10px rgba(42, 193, 188, 0.3);
 }
@@ -81,8 +81,8 @@
 
 /* 인사이트 카드 */
 .insight-card {
-  background-color: #f0fbfa; /* 연한 민트 */
-  border-left: 6px solid #2ac1bc;
+  background-color: #FFF0F0; /* 연한 민트 */
+  border-left: 6px solid #ff3d00;
   border-radius: 8px;
   padding: 25px;
   display: flex;
@@ -102,7 +102,7 @@
 }
 
 .insight-content .highlight {
-  color: #2ac1bc;
+  color: #ff3d00;
   font-weight: 800;
   font-size: 1.3rem;
 }

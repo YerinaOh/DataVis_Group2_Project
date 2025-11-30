@@ -93,7 +93,7 @@ const SalesBarChart = () => {
     }));
 
     const exportData = {
-      title: "배달의민족 타겟광고 시뮬레이션 데이터",
+      title: "캐치테이블 타겟광고 시뮬레이션 데이터",
       created_at: new Date().toLocaleString(),
       conditions: conditions,
       top_10_rankings: top10
@@ -189,6 +189,10 @@ const SalesBarChart = () => {
   const chartAnnotations = [];
   let chartData = { x: [], y: [] };
   
+  const barColors = chartDisplayData && chartDisplayData.x.length > 0
+    ? chartDisplayData.x.map((_, index) => index === 0 ? '#ff3d00' : '#ff6b6b') // 1위는 레드, 나머지는 민트
+    : [];
+
   if (isLoading) {
     chartAnnotations.push({ text: '전체 데이터 로딩 중...', xref: 'paper', yref: 'paper', x: 0.5, y: 0.5, showarrow: false, font: { size: 16, color: '#888' }});
   } else if (chartDisplayData && chartDisplayData.x.length > 0) {
@@ -339,7 +343,7 @@ const SalesBarChart = () => {
               x: chartData.x,
               y: chartData.y,
               type: 'bar',
-              marker: { color: '#2ac1bc' },
+              marker: { color: barColors }, 
               hoverinfo: 'x+y',
             }]}
             layout={{
@@ -355,8 +359,7 @@ const SalesBarChart = () => {
             }}
             useResizeHandler={true}
             style={{ width: '100%', height: '100%' }}
-            config={{ displayModeBar: true, // true로 변경하거나 이 줄을 삭제하면 됩니다.
-              responsive: true }}
+            config={{ displayModeBar: false }}
           />
         </div>
       </section>

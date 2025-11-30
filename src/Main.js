@@ -56,10 +56,13 @@ const Main = ({ onLogout, userProfile }) => {
 
   return (
     <div className="dashboard-container">
-      {/* 사이드바 (기존 동일) */}
+      {/* 1. 사이드바 */}
       <aside className="sidebar">
         <div className="sidebar-header">
-          <h2 className="baemin-logo-white">배달의민족</h2>
+          {/* [수정] 로고 텍스트 변경 */}
+          <h2 className="baemin-logo-white" style={{ fontFamily: 'sans-serif', letterSpacing: '0px' }}>
+            CATCH TABLE
+          </h2>
           <span className="admin-sub">Admin</span>
         </div>
         <nav className="sidebar-nav">

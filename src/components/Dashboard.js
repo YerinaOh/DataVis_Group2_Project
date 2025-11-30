@@ -98,11 +98,16 @@ const Dashboard = () => {
       return acc;
     }, {});
 
-    setAgeData({
-      labels: Object.keys(salesByAge),
-      values: Object.values(salesByAge)
-    });
+    // 매출액 기준 내림차순 정렬 후 상위 5개 추출
+    const sortedAgeData = Object.entries(salesByAge)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 5);
 
+    setAgeData({
+      labels: sortedAgeData.map(([label]) => label),
+      values: sortedAgeData.map(([, value]) => value)
+    });
+    
     // 분석 3: 총 예상 매출
     const total = Object.values(salesByCategory).reduce((a, b) => a + b, 0);
     setTotalSales(total);
@@ -207,7 +212,7 @@ const Dashboard = () => {
                   labels: ageData.labels,
                   type: 'pie',
                   hole: 0.4,
-                  marker: { colors: ['#2ac1bc', '#6ddad6', '#aeebea', '#d6f5f4', '#f1f3f5'] },
+                  marker: { colors: ['#ff3d00', '#d32f2f', '#aeebea', '#d6f5f4', '#f1f3f5'] },
                   textinfo: 'label+percent',
                   hoverinfo: 'label+value',
                   showlegend: false
@@ -216,10 +221,9 @@ const Dashboard = () => {
                   height: 250,
                   margin: { t: 10, b: 10, l: 10, r: 10 },
                   paper_bgcolor: 'rgba(0,0,0,0)',
-                  font: { family: 'Pretendard' }
+                  font: { family: 'Pretendard, sans-serif' }
                 }}
-                config={{ displayModeBar: true, // true로 변경하거나 이 줄을 삭제하면 됩니다.
-              responsive: true }}
+                config={{ displayModeBar: false }}
                 style={{ width: '100%', height: '100%' }}
               />
             )}

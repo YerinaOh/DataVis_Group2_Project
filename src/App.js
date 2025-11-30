@@ -20,7 +20,7 @@ function App() {
       setUserProfile({ name: '김민지 사원', team: '전략마케팅 기획팀', role: 'admin' });
     } else {
       // [수정] role: 'sajang' 추가
-      setUserProfile({ name: '사장님', team: '수원 왕갈비 통닭 본점', role: 'sajang' });
+      setUserProfile({ name: '사장님', team: '참숯화로구이 본점', role: 'sajang' });
     }
     setIsLoggedIn(true);
   };

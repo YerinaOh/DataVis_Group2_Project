@@ -99,16 +99,16 @@ const DayAnalysis = () => {
                 y: chartData.y,
                 type: 'scatter',
                 mode: 'lines+markers',
-                marker: { color: '#2ac1bc', size: 10, symbol: 'circle' },
-                line: { color: '#2ac1bc', width: 4, shape: 'spline' },
+                marker: { color: '#ff3d00', size: 10, symbol: 'circle' },
+                line: { color: '#d32f2f', width: 4, shape: 'spline' },
                 fill: 'tozeroy',
-                fillcolor: 'rgba(42, 193, 188, 0.15)'
+                fillcolor: '#FFF5EE'
               }
             ]}
             layout={{
               title: {
                 text: `<b>${DAY_LABELS.find(d => d.id === selectedDay)?.label}</b> 시간대별 매출 추이`,
-                font: { family: 'Pretendard', size: 20 }
+                font: { family: 'sans-serif', size: 20 }
               },
               xaxis: { 
                 title: '시간대 (0~24시)', 
@@ -125,7 +125,7 @@ const DayAnalysis = () => {
               autosize: true,
               height: 500,
               margin: { l: 60, r: 30, b: 80, t: 60 },
-              font: { family: 'Pretendard' },
+              font: { family: 'Pretendard, sans-serif' },
               
               // 애니메이션 설정
             //   transition: { duration: 500, easing: 'cubic-in-out' },

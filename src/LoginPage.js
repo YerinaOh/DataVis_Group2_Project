@@ -13,10 +13,12 @@ const LoginPage = ({ onLogin }) => {
   return (
     <div className="login-container">
       <div className="login-box">
-        {/* 로고 영역 */}
+    {/* 로고 영역 수정 */}
         <div className="logo-area">
-          <h1 className="baemin-logo">배달의민족</h1>
-          <span className="admin-badge">Data Lab AD</span>
+          {/* [수정] 배달의민족 -> 캐치테이블 */}
+          <h1 className="baemin-logo" style={{ fontFamily: 'sans-serif' }}>CATCH TABLE</h1>
+          {/* [수정] 사장님광장 AD -> 파트너센터 */}
+          <span className="admin-badge">파트너센터</span>
         </div>
 
         {/* 서비스 설명 */}

@@ -126,11 +126,12 @@ const AdSimulation = () => {
 
               {/* 하단 배너 (1위 업종 광고) */}
               <div className="app-bottom-banner">
-                <div className="banner-text">
-                  <span className="banner-tag">추천</span>
-                  <p>지금 <strong>{top8Items[0]?.category}</strong> 주문하면<br/>배달팁 0원!</p>
+                  <div className="banner-text">
+                  <span className="banner-tag">HOT</span>
+                  {/* [수정] 배달 멘트 -> 예약/웨이팅 멘트 */}
+                  <p>오늘같은 날씨에 <strong>{top8Items[0]?.category}</strong> 예약하면<br/>콜키지 프리 & 10% 할인!</p>
                 </div>
-                <button>보러가기</button>
+                <button>예약하기</button>
               </div>
             </>
           )}

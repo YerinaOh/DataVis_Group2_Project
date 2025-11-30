@@ -2,8 +2,8 @@
 
 /* 배민 민트색 정의 */
 :root {
-  --baemin-mint: #2ac1bc;
-  --baemin-mint-dark: #23a4a0;
+  --baemin-mint: #ff3d00; 
+  --baemin-mint-dark: #d32f2f;
   --text-black: #333333;
   --text-gray: #999999;
   --bg-gray: #f0f2f5;
@@ -173,7 +173,7 @@ body {
 
 .nav-item.active {
   color: var(--baemin-mint);
-  background-color: rgba(42, 193, 188, 0.1);
+  background-color: #FFF5EE;
   border-right: 4px solid var(--baemin-mint);
   font-weight: bold;
 }
@@ -391,7 +391,7 @@ body {
 /* 아이콘 그리드 위치 (회색 띠 위) */
 .app-icon-grid {
   position: absolute;
-  top: 38%; /* [조정 필요] 회색 띠의 시작 높이 % */
+  top: 19%; /* [조정 필요] 회색 띠의 시작 높이 % */
   left: 8%; /* [조정 필요] 좌우 여백 */
   width: 84%; /* [조정 필요] 그리드 너비 */
   display: grid;
@@ -452,7 +452,7 @@ body {
 /* 하단 배너 (아이폰 화면 하단) */
 .app-bottom-banner {
   position: absolute;
-  bottom: 16%; /* [조정 필요] 하단 위치 */
+  bottom: 20%; /* [조정 필요] 하단 위치 */
   left: 5%;
   width: 90%;
   background-color: rgba(255, 255, 255, 0.95);

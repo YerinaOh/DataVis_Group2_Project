@@ -9,10 +9,10 @@ const HOUR_LABELS = {
 };
 
 const CATEGORY_ICONS = {
-  "한식": "🍚", "분식": "🍢", "카페/디저트": "☕", "치킨": "🍗",
-  "피자/양식": "🍕", "중식": "🥟", "일식/돈까스": "🍣", "족발/보쌈": "🐷",
-  "야식": "🌙", "패스트푸드": "🍔", "도시락": "🍱", "아시안": "🍜",
-  "백반/죽/국수": "🍲", "찜/탕": "🥘", "고기/구이": "🥩", "회/일식": "🐟",
+  "한식": "🍚", "분식": "🍢", "커피/음료": "☕", "닭/오리요리": "🍗",
+  "양식": "🍕", "중식": "🥟", "일식/돈까스": "🍣", "족발/보쌈": "🐷",
+  "간이주점": "🌙", "패스트푸드": "🍔", "도시락": "🍱", "제과/제빵/떡/케익": "🍞",
+  "백반/죽/국수": "🍲", "찜/탕": "🥘", "고기요리": "🥩", "일식/수산물": "🐟",
   "별식/퓨전요리": "🌮"
 };
 
@@ -142,16 +142,16 @@ const CategoryAnalysis = () => {
                     y: chartData.y,
                     type: 'scatter',
                     mode: 'lines+markers',
-                    marker: { color: '#2ac1bc', size: 8 },
-                    line: { color: '#2ac1bc', width: 3, shape: 'spline' },
+                    marker: { color: '#ff3d00', size: 8 },
+                    line: { color: '#d32f2f', width: 3, shape: 'spline' },
                     fill: 'tozeroy',
-                    fillcolor: 'rgba(42, 193, 188, 0.1)'
+                    fillcolor: '#FFF5EE'
                   }
                 ]}
                 layout={{
                   title: {
                     text: `<b>${selectedCategory}</b> 시간대별 매출 추이`,
-                    font: { family: 'Pretendard', size: 18, color: '#333' }
+                    font: { family: 'Pretendard, sans-serif', size: 18, color: '#333' }
                   },
                   xaxis: { 
                     title: '시간대', 
@@ -166,14 +166,13 @@ const CategoryAnalysis = () => {
                   autosize: true,
                   height: 450,
                   margin: { l: 60, r: 30, b: 80, t: 60 },
-                  font: { family: 'Pretendard' },
+                  font: { family: 'Pretendard, sans-serif' },
                   paper_bgcolor: 'rgba(0,0,0,0)',
                   plot_bgcolor: 'rgba(0,0,0,0)'
                 }}
                 useResizeHandler={true}
                 style={{ width: '100%', height: '100%' }}
-                config={{ displayModeBar: true, // true로 변경하거나 이 줄을 삭제하면 됩니다.
-              responsive: true }}
+                config={{ displayModeBar: false }}
               />
             </div>
 
@@ -202,7 +201,7 @@ const CategoryAnalysis = () => {
                   <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     {categoryInsights?.topDemographics.map((demo, idx) => (
                       <div key={idx} style={{ fontSize: '0.95rem', color: '#333' }}>
-                        <span style={{ fontWeight: 'bold', color: '#2ac1bc', marginRight: '8px' }}>{idx + 1}위</span>
+                        <span style={{ fontWeight: 'bold', color: '#d32f2f', marginRight: '8px' }}>{idx + 1}위</span>
                         {demo}
                       </div>
                     ))}
@@ -211,7 +210,7 @@ const CategoryAnalysis = () => {
                 
                 {/* 총 매출 */}
                 <div className="insight-item total">
-                  <span className="label">(2024년 1월 1일 ~ 2024년 1월 14일)</span>  
+                  <span className="label">(2024년 1월 1일 ~ 2024년 12월 31일)</span>  
                   <span className="label">분석 기간 총 매출</span>
                   <span className="value">{formatMoney(categoryInsights?.totalSales)}만원</span>
                 </div>

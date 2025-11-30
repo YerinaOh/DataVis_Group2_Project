@@ -105,7 +105,7 @@
 .time-text {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #2ac1bc; /* 배민 민트 */
+  color: #ff3d00; /* 배민 민트 */
   font-family: 'Black Han Sans', sans-serif; /* 숫자 강조 */
   letter-spacing: 2px;
 }
@@ -202,7 +202,7 @@
 
 .sales-amount {
   font-size: 1.1rem;
-  color: #2ac1bc;
+  color: #ff3d00;
   font-weight: 600;
 }
 

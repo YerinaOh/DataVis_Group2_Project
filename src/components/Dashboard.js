@@ -218,7 +218,8 @@ const Dashboard = () => {
                   paper_bgcolor: 'rgba(0,0,0,0)',
                   font: { family: 'Pretendard' }
                 }}
-                config={{ displayModeBar: false }}
+                config={{ displayModeBar: true, // true로 변경하거나 이 줄을 삭제하면 됩니다.
+              responsive: true }}
                 style={{ width: '100%', height: '100%' }}
               />
             )}

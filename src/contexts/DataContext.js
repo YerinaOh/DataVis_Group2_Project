@@ -8,7 +8,13 @@ const DataContext = createContext();
 const CSV_FILES = [
   '/suwon_food_weather_2024_01.csv',
   '/suwon_food_weather_2024_02.csv',
-  '/suwon_food_weather_2024_03.csv'
+  '/suwon_food_weather_2024_03.csv',
+  '/suwon_food_weather_2024_04.csv',
+  '/suwon_food_weather_2024_05.csv',
+  '/suwon_food_weather_2024_06.csv',
+  '/suwon_food_weather_2024_07.csv',
+  '/suwon_food_weather_2024_08.csv',
+  '/suwon_food_weather_2024_09.csv'
 ];
 
 export const DataProvider = ({ children }) => {
